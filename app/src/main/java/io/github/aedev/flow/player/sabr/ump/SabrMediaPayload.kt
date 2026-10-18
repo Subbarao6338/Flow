@@ -7,9 +7,7 @@ package io.github.aedev.flow.player.sabr.ump
 object SabrMediaPayload {
     const val HEADER_ID_BYTES = 1
 
-    fun headerId(payload: ByteArray): Int? =
-        payload.firstOrNull()?.toInt()?.and(0xFF)
+    fun headerId(payload: ByteArray): Int? = payload.firstOrNull()?.toInt()?.and(0xFF)
 
-    fun dataOffset(payload: ByteArray): Int =
-        if (payload.isEmpty()) 0 else HEADER_ID_BYTES
+    fun dataOffset(payload: ByteArray): Int = if (payload.isEmpty()) 0 else HEADER_ID_BYTES
 }

@@ -18,18 +18,23 @@ import io.github.aedev.flow.R
  * + ongoing notification.
  */
 class SyncForegroundService : Service() {
-
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         ensureChannel()
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(getString(R.string.sync_notification_title))
-            .setContentText(getString(R.string.sync_notification_text))
-            .setSmallIcon(android.R.drawable.stat_sys_upload)
-            .setOngoing(true)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .build()
+        val notification =
+            NotificationCompat
+                .Builder(this, CHANNEL_ID)
+                .setContentTitle(getString(R.string.sync_notification_title))
+                .setContentText(getString(R.string.sync_notification_text))
+                .setSmallIcon(android.R.drawable.stat_sys_upload)
+                .setOngoing(true)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build()
         startForegroundCompat(notification)
         return START_NOT_STICKY
     }
@@ -51,7 +56,7 @@ class SyncForegroundService : Service() {
                         CHANNEL_ID,
                         getString(R.string.sync_notification_channel),
                         NotificationManager.IMPORTANCE_LOW,
-                    )
+                    ),
                 )
             }
         }

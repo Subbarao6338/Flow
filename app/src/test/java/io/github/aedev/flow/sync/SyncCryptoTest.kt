@@ -16,20 +16,20 @@ import javax.crypto.AEADBadTagException
  * AES-GCM via round-trip + tamper + AAD-binding.
  */
 class SyncCryptoTest {
-
     // --- base64url ---
 
     @Test
     fun base64url_rfc4648_vectors() {
-        val cases = mapOf(
-            "" to "",
-            "f" to "Zg",
-            "fo" to "Zm8",
-            "foo" to "Zm9v",
-            "foob" to "Zm9vYg",
-            "fooba" to "Zm9vYmE",
-            "foobar" to "Zm9vYmFy",
-        )
+        val cases =
+            mapOf(
+                "" to "",
+                "f" to "Zg",
+                "fo" to "Zm8",
+                "foo" to "Zm9v",
+                "foob" to "Zm9vYg",
+                "fooba" to "Zm9vYmE",
+                "foobar" to "Zm9vYmFy",
+            )
         for ((plain, expected) in cases) {
             val encoded = SyncBytes.b64urlEncode(plain.toByteArray(Charsets.US_ASCII))
             assertEquals("encode('$plain')", expected, encoded)
@@ -90,7 +90,10 @@ class SyncCryptoTest {
         assertArrayEquals(k1.sealKey(isHost = false), k1.openKey(isHost = true))
     }
 
-    private fun assertFalse(msg: String, cond: Boolean) = assertTrue(msg, !cond)
+    private fun assertFalse(
+        msg: String,
+        cond: Boolean,
+    ) = assertTrue(msg, !cond)
 
     // --- SAS ---
 

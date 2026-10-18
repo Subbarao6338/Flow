@@ -7,7 +7,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class HlcTest {
-
     @Test
     fun encode_decode_roundtrip() {
         val hlc = Hlc(1781512000123L, 7, "a1b2c3d4")
@@ -25,9 +24,9 @@ class HlcTest {
 
     @Test
     fun total_order_physical_then_counter_then_node() {
-        assertTrue(Hlc(1, 0, "z") < Hlc(2, 0, "a"))      // physical dominates
-        assertTrue(Hlc(5, 1, "z") < Hlc(5, 2, "a"))      // then counter
-        assertTrue(Hlc(5, 2, "a") < Hlc(5, 2, "b"))      // then node tiebreak
+        assertTrue(Hlc(1, 0, "z") < Hlc(2, 0, "a")) // physical dominates
+        assertTrue(Hlc(5, 1, "z") < Hlc(5, 2, "a")) // then counter
+        assertTrue(Hlc(5, 2, "a") < Hlc(5, 2, "b")) // then node tiebreak
         assertEquals(0, Hlc(5, 2, "a").compareTo(Hlc(5, 2, "a")))
     }
 

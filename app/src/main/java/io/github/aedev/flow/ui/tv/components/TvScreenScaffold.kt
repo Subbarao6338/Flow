@@ -31,11 +31,12 @@ fun TvScreenScaffold(
             title = title,
             subtitle = subtitle,
             action = action,
-            modifier = Modifier.padding(
-                start = dimens.overscanHorizontal,
-                end = dimens.overscanHorizontal,
-                top = dimens.overscanVertical,
-            ),
+            modifier =
+                Modifier.padding(
+                    start = dimens.overscanHorizontal,
+                    end = dimens.overscanHorizontal,
+                    top = dimens.overscanVertical,
+                ),
         )
         Spacer(Modifier.height(20.dp))
         Box(Modifier.weight(1f)) {

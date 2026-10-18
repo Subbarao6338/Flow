@@ -15,7 +15,6 @@ import org.junit.Test
  * union is the cross-platform anti-drift gate. Update only with a protocol version bump.
  */
 class SyncGoldenVectorsTest {
-
     private val master = SyncBytes.fromHex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f")
     private val sid = SyncBytes.fromHex("a0a1a2a3a4a5a6a7a8a9aaabacadaeaf")
 
@@ -44,18 +43,36 @@ class SyncGoldenVectorsTest {
 
     @Test
     fun canonical_playlist_matches_golden() {
-        val pl = CanonicalPlaylist(
-            syncId = "p1", origin = "local", youtubeId = null, title = "Gym", description = "",
-            isMusic = false, isUserCreated = true, isProtected = false,
-            createdAtMs = 1781000000000L, updatedHlc = "100:0:aaa", deleted = false,
-            items = listOf(
-                CanonicalPlaylistItem(
-                    videoId = "v1", position = 0, addedAtMs = 1, deleted = false, title = "A",
-                    channelName = "c", channelId = "uc", thumbnailUrl = "", durationSeconds = 212,
-                    isMusic = false, hlc = "100:0:aaa",
-                ),
-            ),
-        )
+        val pl =
+            CanonicalPlaylist(
+                syncId = "p1",
+                origin = "local",
+                youtubeId = null,
+                title = "Gym",
+                description = "",
+                isMusic = false,
+                isUserCreated = true,
+                isProtected = false,
+                createdAtMs = 1781000000000L,
+                updatedHlc = "100:0:aaa",
+                deleted = false,
+                items =
+                    listOf(
+                        CanonicalPlaylistItem(
+                            videoId = "v1",
+                            position = 0,
+                            addedAtMs = 1,
+                            deleted = false,
+                            title = "A",
+                            channelName = "c",
+                            channelId = "uc",
+                            thumbnailUrl = "",
+                            durationSeconds = 212,
+                            isMusic = false,
+                            hlc = "100:0:aaa",
+                        ),
+                    ),
+            )
         val wire = SyncSerialization.encodePlaylists(listOf(pl))
         val expected =
             """{"createdAtMs":1781000000000,"deleted":false,"description":"","isMusic":false,"isProtected":false,"isUserCreated":true,"items":[{"addedAtMs":1,"channelId":"uc","channelName":"c","deleted":false,"durationSeconds":212,"hlc":"100:0:aaa","isMusic":false,"position":0,"thumbnailUrl":"","title":"A","videoId":"v1"}],"origin":"local","syncId":"p1","title":"Gym","updatedHlc":"100:0:aaa","youtubeId":null}"""

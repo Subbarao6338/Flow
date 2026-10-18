@@ -13,7 +13,6 @@ import org.junit.Test
  * SABR server fell back to its lowest rung (~360p) no matter which format we preferred.
  */
 class SabrRequestBuilderTest {
-
     private fun state(block: SabrSessionState.() -> Unit): SabrSessionState =
         SabrSessionState().apply {
             clientNameId = 1
@@ -33,12 +32,13 @@ class SabrRequestBuilderTest {
 
     @Test
     fun `auto mode sends sticky_resolution derived from the selected video height`() {
-        val s = state {
-            selectedVideoItag = 137
-            selectedVideoHeight = 1080
-            selectedAudioItag = 251
-            stickyResolution = 0 // auto
-        }
+        val s =
+            state {
+                selectedVideoItag = 137
+                selectedVideoHeight = 1080
+                selectedAudioItag = 251
+                stickyResolution = 0 // auto
+            }
         val abr = clientAbrState(SabrRequestBuilder.buildInitialRequest(s))
 
         // field 21 must be present and equal the selected video height (the fix)
@@ -49,22 +49,24 @@ class SabrRequestBuilderTest {
 
     @Test
     fun `low quality video is floored to 360p in sticky_resolution`() {
-        val s = state {
-            selectedVideoItag = 133
-            selectedVideoHeight = 240
-            stickyResolution = 0
-        }
+        val s =
+            state {
+                selectedVideoItag = 133
+                selectedVideoHeight = 240
+                stickyResolution = 0
+            }
         val abr = clientAbrState(SabrRequestBuilder.buildInitialRequest(s))
         assertThat(abr[21]?.first()?.asInt()).isEqualTo(360)
     }
 
     @Test
     fun `user pinned quality drives both sticky and last_manual resolution`() {
-        val s = state {
-            selectedVideoItag = 137
-            selectedVideoHeight = 1080
-            stickyResolution = 720
-        }
+        val s =
+            state {
+                selectedVideoItag = 137
+                selectedVideoHeight = 1080
+                stickyResolution = 720
+            }
         val abr = clientAbrState(SabrRequestBuilder.buildInitialRequest(s))
         assertThat(abr[21]?.first()?.asInt()).isEqualTo(720)
         assertThat(abr[16]?.first()?.asInt()).isEqualTo(720)
@@ -72,11 +74,12 @@ class SabrRequestBuilderTest {
 
     @Test
     fun `playback_rate is always present as a fixed32 float`() {
-        val s = state {
-            selectedVideoItag = 137
-            selectedVideoHeight = 1080
-            playbackRate = 1.0f
-        }
+        val s =
+            state {
+                selectedVideoItag = 137
+                selectedVideoHeight = 1080
+                playbackRate = 1.0f
+            }
         val abr = clientAbrState(SabrRequestBuilder.buildInitialRequest(s))
         val field35 = abr[35]?.first()
         assertThat(field35).isNotNull()
@@ -86,36 +89,39 @@ class SabrRequestBuilderTest {
 
     @Test
     fun `streamer context carries web client info with hl and gl`() {
-        val s = state {
-            selectedVideoItag = 137
-            selectedVideoHeight = 1080
-        }
+        val s =
+            state {
+                selectedVideoItag = 137
+                selectedVideoHeight = 1080
+            }
         val top = topLevel(SabrRequestBuilder.buildInitialRequest(s))
         val streamerCtx = ProtobufReader(top[19]!!.first().asBytes()).readAllFields()
         val clientInfo = ProtobufReader(streamerCtx[1]!!.first().asBytes()).readAllFields()
 
         assertThat(clientInfo[16]?.first()?.asInt()).isEqualTo(1) // WEB client id
         assertThat(clientInfo[21]?.first()?.asString()).isEqualTo("en-US") // hl
-        assertThat(clientInfo[22]?.first()?.asString()).isEqualTo("US")    // gl
+        assertThat(clientInfo[22]?.first()?.asString()).isEqualTo("US") // gl
     }
 
     @Test
     fun `ustreamer config is sent as top-level bytes field 5`() {
-        val s = state {
-            selectedVideoItag = 137
-            selectedVideoHeight = 1080
-        }
+        val s =
+            state {
+                selectedVideoItag = 137
+                selectedVideoHeight = 1080
+            }
         val top = topLevel(SabrRequestBuilder.buildInitialRequest(s))
         assertThat(top[5]?.first()?.asBytes()).isEqualTo(byteArrayOf(1, 2, 3))
     }
 
     @Test
     fun `preferred video and audio format ids are pinned in fields 17 and 16`() {
-        val s = state {
-            selectedVideoItag = 137
-            selectedVideoHeight = 1080
-            selectedAudioItag = 251
-        }
+        val s =
+            state {
+                selectedVideoItag = 137
+                selectedVideoHeight = 1080
+                selectedAudioItag = 251
+            }
         val top = topLevel(SabrRequestBuilder.buildInitialRequest(s))
 
         val prefVideo = ProtobufReader(top[17]!!.first().asBytes()).readAllFields()

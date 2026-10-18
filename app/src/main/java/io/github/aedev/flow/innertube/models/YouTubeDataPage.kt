@@ -1,6 +1,5 @@
 package io.github.aedev.flow.innertube.models
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

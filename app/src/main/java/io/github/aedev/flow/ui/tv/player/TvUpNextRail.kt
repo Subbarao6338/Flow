@@ -42,30 +42,33 @@ fun TvUpNextRail(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            text = if (queue.isNotEmpty()) {
-                stringResource(R.string.tv_player_queue)
-            } else {
-                stringResource(R.string.up_next)
-            },
+            text =
+                if (queue.isNotEmpty()) {
+                    stringResource(R.string.tv_player_queue)
+                } else {
+                    stringResource(R.string.up_next)
+                },
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         ProvideTvRowPivot {
             LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .tvRowFocus(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .tvRowFocus(),
                 horizontalArrangement = Arrangement.spacedBy(dimens.itemSpacing),
             ) {
                 itemsIndexed(videos, key = { index, video -> "${video.id}_$index" }) { index, video ->
                     TvVideoCard(
                         video = video,
                         onClick = { onVideoClick(video) },
-                        modifier = if (index == 0) {
-                            Modifier.focusRequester(firstItemFocusRequester)
-                        } else {
-                            Modifier
-                        },
+                        modifier =
+                            if (index == 0) {
+                                Modifier.focusRequester(firstItemFocusRequester)
+                            } else {
+                                Modifier
+                            },
                     )
                 }
             }

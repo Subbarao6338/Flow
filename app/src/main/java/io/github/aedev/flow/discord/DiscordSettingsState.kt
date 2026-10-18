@@ -29,14 +29,15 @@ fun deriveDiscordSettingsState(
     val available = transportAvailable && connectionState != DiscordConnectionState.UNAVAILABLE
     val enabled = preferenceEnabled && available
     val linkedAccount = accountName?.takeIf(String::isNotBlank)
-    val summary = when {
-        !available -> DiscordSettingsSummary.UNAVAILABLE
-        connectionState == DiscordConnectionState.ERROR -> DiscordSettingsSummary.ERROR
-        !enabled -> DiscordSettingsSummary.OFF
-        connectionState == DiscordConnectionState.CONNECTED -> DiscordSettingsSummary.CONNECTED
-        linkedAccount != null -> DiscordSettingsSummary.READY
-        else -> DiscordSettingsSummary.NOT_CONNECTED
-    }
+    val summary =
+        when {
+            !available -> DiscordSettingsSummary.UNAVAILABLE
+            connectionState == DiscordConnectionState.ERROR -> DiscordSettingsSummary.ERROR
+            !enabled -> DiscordSettingsSummary.OFF
+            connectionState == DiscordConnectionState.CONNECTED -> DiscordSettingsSummary.CONNECTED
+            linkedAccount != null -> DiscordSettingsSummary.READY
+            else -> DiscordSettingsSummary.NOT_CONNECTED
+        }
 
     return DiscordSettingsState(
         isAvailable = available,

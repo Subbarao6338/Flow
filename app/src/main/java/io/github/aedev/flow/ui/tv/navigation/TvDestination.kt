@@ -22,12 +22,12 @@ enum class TvDestination(
     SUBSCRIPTIONS("subscriptions", R.string.top_bar_subscriptions_title, Icons.Outlined.Subscriptions),
     SEARCH("search", R.string.search, Icons.Outlined.Search),
     LIBRARY("library", R.string.library, Icons.Outlined.VideoLibrary),
-    SETTINGS("settings", R.string.settings, Icons.Outlined.Settings);
+    SETTINGS("settings", R.string.settings, Icons.Outlined.Settings),
+    ;
 
     companion object {
         val primary: List<TvDestination> = entries.toList()
 
-        fun fromRoute(route: String?): TvDestination =
-            entries.firstOrNull { it.route == route } ?: HOME
+        fun fromRoute(route: String?): TvDestination = entries.firstOrNull { it.route == route } ?: HOME
     }
 }

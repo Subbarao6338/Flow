@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class TvScrubControllerTest {
-
     private val controller = TvScrubController()
 
     @Test
@@ -21,12 +20,13 @@ class TvScrubControllerTest {
 
     @Test
     fun `first step starts from the playhead`() {
-        val state = controller.beginOrStep(
-            direction = 1,
-            repeatCount = 0,
-            currentPositionMs = 60_000L,
-            durationMs = 600_000L,
-        )
+        val state =
+            controller.beginOrStep(
+                direction = 1,
+                repeatCount = 0,
+                currentPositionMs = 60_000L,
+                durationMs = 600_000L,
+            )
         assertThat(state.isScrubbing).isTrue()
         assertThat(state.targetMs).isEqualTo(70_000L)
     }

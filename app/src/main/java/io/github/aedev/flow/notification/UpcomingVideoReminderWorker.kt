@@ -12,9 +12,8 @@ import java.util.concurrent.TimeUnit
 
 class UpcomingVideoReminderWorker(
     appContext: Context,
-    params: WorkerParameters
+    params: WorkerParameters,
 ) : CoroutineWorker(appContext, params) {
-
     override suspend fun doWork(): Result {
         val videoId = inputData.getString(KEY_VIDEO_ID).orEmpty()
         val title = inputData.getString(KEY_TITLE).orEmpty()
@@ -30,7 +29,7 @@ class UpcomingVideoReminderWorker(
             videoId = videoId,
             title = title,
             channelName = channelName,
-            thumbnailUrl = thumbnailUrl
+            thumbnailUrl = thumbnailUrl,
         )
         PlayerPreferences(applicationContext).setUpcomingVideoReminder(videoId, enabled = false)
         return Result.success()
@@ -48,29 +47,35 @@ class UpcomingVideoReminderWorker(
             releaseTimeMs: Long,
             title: String,
             channelName: String,
-            thumbnailUrl: String?
+            thumbnailUrl: String?,
         ) {
             val delayMs = (releaseTimeMs - System.currentTimeMillis()).coerceAtLeast(0L)
-            val inputData = Data.Builder()
-                .putString(KEY_VIDEO_ID, videoId)
-                .putString(KEY_TITLE, title)
-                .putString(KEY_CHANNEL_NAME, channelName)
-                .putString(KEY_THUMBNAIL_URL, thumbnailUrl)
-                .build()
+            val inputData =
+                Data
+                    .Builder()
+                    .putString(KEY_VIDEO_ID, videoId)
+                    .putString(KEY_TITLE, title)
+                    .putString(KEY_CHANNEL_NAME, channelName)
+                    .putString(KEY_THUMBNAIL_URL, thumbnailUrl)
+                    .build()
 
-            val request = OneTimeWorkRequestBuilder<UpcomingVideoReminderWorker>()
-                .setInputData(inputData)
-                .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)
-                .build()
+            val request =
+                OneTimeWorkRequestBuilder<UpcomingVideoReminderWorker>()
+                    .setInputData(inputData)
+                    .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)
+                    .build()
 
             WorkManager.getInstance(context).enqueueUniqueWork(
                 uniqueWorkName(videoId),
                 ExistingWorkPolicy.REPLACE,
-                request
+                request,
             )
         }
 
-        fun cancelReminder(context: Context, videoId: String) {
+        fun cancelReminder(
+            context: Context,
+            videoId: String,
+        ) {
             WorkManager.getInstance(context).cancelUniqueWork(uniqueWorkName(videoId))
         }
 

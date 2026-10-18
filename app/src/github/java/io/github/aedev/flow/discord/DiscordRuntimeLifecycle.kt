@@ -17,18 +17,25 @@ internal fun discordRuntimeAction(
     appForeground: Boolean,
     accountLinkInProgress: Boolean,
     backgroundPlaybackActive: Boolean,
-): DiscordRuntimeAction = when {
-    !enabled -> DiscordRuntimeAction.UNLINK
-    accountLinkInProgress || appForeground || backgroundPlaybackActive ->
-        DiscordRuntimeAction.KEEP_CONNECTION
-    else -> DiscordRuntimeAction.DISCONNECT
-}
+): DiscordRuntimeAction =
+    when {
+        !enabled -> {
+            DiscordRuntimeAction.UNLINK
+        }
 
-internal fun Flow<Boolean>.delayDiscordPlaybackInactive(
-    disconnectDelayMs: Long,
-): Flow<Boolean> = channelFlow {
-    distinctUntilChanged().collectLatest { active ->
-        if (!active) delay(disconnectDelayMs)
-        send(active)
+        accountLinkInProgress || appForeground || backgroundPlaybackActive -> {
+            DiscordRuntimeAction.KEEP_CONNECTION
+        }
+
+        else -> {
+            DiscordRuntimeAction.DISCONNECT
+        }
     }
-}.distinctUntilChanged()
+
+internal fun Flow<Boolean>.delayDiscordPlaybackInactive(disconnectDelayMs: Long): Flow<Boolean> =
+    channelFlow {
+        distinctUntilChanged().collectLatest { active ->
+            if (!active) delay(disconnectDelayMs)
+            send(active)
+        }
+    }.distinctUntilChanged()

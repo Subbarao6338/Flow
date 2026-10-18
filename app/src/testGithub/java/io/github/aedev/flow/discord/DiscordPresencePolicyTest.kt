@@ -4,21 +4,23 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class DiscordPresencePolicyTest {
-    private val policy = DiscordPresencePolicy(
-        minimumUpdateIntervalMs = 5_000L,
-        seekDriftThresholdMs = 10_000L,
-    )
+    private val policy =
+        DiscordPresencePolicy(
+            minimumUpdateIntervalMs = 5_000L,
+            seekDriftThresholdMs = 10_000L,
+        )
 
-    private val base = DiscordPresencePayload(
-        type = DiscordActivityType.WATCHING,
-        mediaId = "video-1",
-        details = "Title",
-        state = "by Creator",
-        largeImage = "flow_logo",
-        largeImageText = "Title",
-        startTimestampSeconds = 100L,
-        endTimestampSeconds = 200L,
-    )
+    private val base =
+        DiscordPresencePayload(
+            type = DiscordActivityType.WATCHING,
+            mediaId = "video-1",
+            details = "Title",
+            state = "by Creator",
+            largeImage = "flow_logo",
+            largeImageText = "Title",
+            startTimestampSeconds = 100L,
+            endTimestampSeconds = 200L,
+        )
 
     @Test
     fun firstPayloadIsSent() {
@@ -52,10 +54,11 @@ class DiscordPresencePolicyTest {
 
     @Test
     fun timestampDriftBelowThresholdIsSkipped() {
-        val drifted = base.copy(
-            startTimestampSeconds = 95L,
-            endTimestampSeconds = 195L,
-        )
+        val drifted =
+            base.copy(
+                startTimestampSeconds = 95L,
+                endTimestampSeconds = 195L,
+            )
 
         assertThat(
             policy.decide(
@@ -68,10 +71,11 @@ class DiscordPresencePolicyTest {
 
     @Test
     fun timestampDriftAtThresholdIsSentAfterMinimumInterval() {
-        val drifted = base.copy(
-            startTimestampSeconds = 90L,
-            endTimestampSeconds = 190L,
-        )
+        val drifted =
+            base.copy(
+                startTimestampSeconds = 90L,
+                endTimestampSeconds = 190L,
+            )
 
         assertThat(
             policy.decide(

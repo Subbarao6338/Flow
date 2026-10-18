@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecognitionHistoryDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: RecognitionHistoryEntity): Long
 
@@ -21,12 +20,15 @@ interface RecognitionHistoryDao {
 
     @Query(
         "SELECT * FROM recognition_history WHERE title LIKE '%' || :query || '%' " +
-            "OR artist LIKE '%' || :query || '%' ORDER BY recognizedAt DESC"
+            "OR artist LIKE '%' || :query || '%' ORDER BY recognizedAt DESC",
     )
     fun search(query: String): Flow<List<RecognitionHistoryEntity>>
 
     @Query("UPDATE recognition_history SET liked = :liked WHERE id = :id")
-    suspend fun setLiked(id: Long, liked: Boolean)
+    suspend fun setLiked(
+        id: Long,
+        liked: Boolean,
+    )
 
     @Query("DELETE FROM recognition_history WHERE id = :id")
     suspend fun delete(id: Long)

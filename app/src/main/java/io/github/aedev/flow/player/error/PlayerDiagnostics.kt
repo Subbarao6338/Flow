@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentLinkedDeque
  */
 @UnstableApi
 object PlayerDiagnostics {
-
     private const val TAG = "PlayerDiagnostics"
     private const val MAX_LOG_ENTRIES = 300
     private val DATE_FORMAT = SimpleDateFormat("HH:mm:ss.SSS", Locale.US)
@@ -38,20 +37,21 @@ object PlayerDiagnostics {
 
     data class LogEntry(
         val timestampMs: Long,
-        val level: String,    // "D", "I", "W", "E"
+        val level: String, // "D", "I", "W", "E"
         val tag: String,
         val message: String,
-        val errorCode: Int? = null,   // PlaybackException error code, if applicable
+        val errorCode: Int? = null, // PlaybackException error code, if applicable
         val throwableType: String? = null,
-        val throwableMsg: String? = null
+        val throwableMsg: String? = null,
     ) {
         override fun toString(): String {
             val ts = DATE_FORMAT.format(Date(timestampMs))
-            val ex = when {
-                throwableType != null && throwableMsg != null -> " [$throwableType: $throwableMsg]"
-                throwableType != null -> " [$throwableType]"
-                else -> ""
-            }
+            val ex =
+                when {
+                    throwableType != null && throwableMsg != null -> " [$throwableType: $throwableMsg]"
+                    throwableType != null -> " [$throwableType]"
+                    else -> ""
+                }
             val ec = if (errorCode != null) " (errCode=$errorCode)" else ""
             return "$ts $level/$tag: $message$ec$ex"
         }
@@ -61,48 +61,73 @@ object PlayerDiagnostics {
 
     // ── Logging helpers ────────────────────────────────────────────────────────
 
-    fun log(tag: String, message: String) {
+    fun log(
+        tag: String,
+        message: String,
+    ) {
         append(LogEntry(System.currentTimeMillis(), "D", tag, message))
     }
 
-    fun logInfo(tag: String, message: String) {
+    fun logInfo(
+        tag: String,
+        message: String,
+    ) {
         append(LogEntry(System.currentTimeMillis(), "I", tag, message))
     }
 
-    fun logWarning(tag: String, message: String) {
+    fun logWarning(
+        tag: String,
+        message: String,
+    ) {
         append(LogEntry(System.currentTimeMillis(), "W", tag, message))
     }
 
-    fun logError(tag: String, message: String, throwable: Throwable? = null) {
-        append(LogEntry(
-            timestampMs    = System.currentTimeMillis(),
-            level          = "E",
-            tag            = tag,
-            message        = message,
-            throwableType  = throwable?.javaClass?.simpleName,
-            throwableMsg   = throwable?.message?.take(200)
-        ))
+    fun logError(
+        tag: String,
+        message: String,
+        throwable: Throwable? = null,
+    ) {
+        append(
+            LogEntry(
+                timestampMs = System.currentTimeMillis(),
+                level = "E",
+                tag = tag,
+                message = message,
+                throwableType = throwable?.javaClass?.simpleName,
+                throwableMsg = throwable?.message?.take(200),
+            ),
+        )
     }
 
-    fun logPlaybackError(tag: String, error: PlaybackException) {
-        append(LogEntry(
-            timestampMs    = System.currentTimeMillis(),
-            level          = "E",
-            tag            = tag,
-            message        = "PlaybackException: ${error.message?.take(200)}",
-            errorCode      = error.errorCode,
-            throwableType  = error.cause?.javaClass?.simpleName,
-            throwableMsg   = error.cause?.message?.take(200)
-        ))
+    fun logPlaybackError(
+        tag: String,
+        error: PlaybackException,
+    ) {
+        append(
+            LogEntry(
+                timestampMs = System.currentTimeMillis(),
+                level = "E",
+                tag = tag,
+                message = "PlaybackException: ${error.message?.take(200)}",
+                errorCode = error.errorCode,
+                throwableType = error.cause?.javaClass?.simpleName,
+                throwableMsg = error.cause?.message?.take(200),
+            ),
+        )
     }
 
-    fun logRefocusGlitch(tag: String, detail: String) {
-        append(LogEntry(
-            timestampMs = System.currentTimeMillis(),
-            level = "W",
-            tag = tag,
-            message = "REFOCUS_GLITCH: $detail"
-        ))
+    fun logRefocusGlitch(
+        tag: String,
+        detail: String,
+    ) {
+        append(
+            LogEntry(
+                timestampMs = System.currentTimeMillis(),
+                level = "W",
+                tag = tag,
+                message = "REFOCUS_GLITCH: $detail",
+            ),
+        )
     }
 
     private fun append(entry: LogEntry) {
@@ -151,9 +176,16 @@ object PlayerDiagnostics {
             val pi = pm.getPackageInfo(context.packageName, 0)
             sb.appendLine("── App ────────────────────────────")
             sb.appendLine("Package   : ${context.packageName}")
-            sb.appendLine("Version   : ${pi.versionName} (${
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) pi.longVersionCode else @Suppress("DEPRECATION") pi.versionCode
-            })")
+            sb.appendLine(
+                "Version   : ${pi.versionName} (${
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        pi.longVersionCode
+                    } else {
+                        @Suppress("DEPRECATION")
+                        pi.versionCode
+                    }
+                })",
+            )
             sb.appendLine()
         } catch (e: Exception) {
         }
@@ -174,15 +206,16 @@ object PlayerDiagnostics {
             sb.appendLine("recoveryAttempted: ${state.recoveryAttempted}")
             sb.appendLine("queueSize     : ${state.queueSize}")
             if (player != null) {
-                val pbState = when (player.playbackState) {
-                    Player.STATE_IDLE      -> "IDLE"
-                    Player.STATE_BUFFERING -> "BUFFERING"
-                    Player.STATE_READY     -> "READY"
-                    Player.STATE_ENDED     -> "ENDED"
-                    else                   -> "UNKNOWN(${player.playbackState})"
-                }
-                val pos  = player.currentPosition
-                val dur  = player.duration.let { if (it == Long.MIN_VALUE) -1L else it }
+                val pbState =
+                    when (player.playbackState) {
+                        Player.STATE_IDLE -> "IDLE"
+                        Player.STATE_BUFFERING -> "BUFFERING"
+                        Player.STATE_READY -> "READY"
+                        Player.STATE_ENDED -> "ENDED"
+                        else -> "UNKNOWN(${player.playbackState})"
+                    }
+                val pos = player.currentPosition
+                val dur = player.duration.let { if (it == Long.MIN_VALUE) -1L else it }
                 sb.appendLine("ExoState      : $pbState")
                 sb.appendLine("Position      : ${formatMs(pos)}")
                 sb.appendLine("Duration      : ${if (dur < 0) "UNSET" else formatMs(dur)}")
@@ -211,8 +244,8 @@ object PlayerDiagnostics {
      * Copy the diagnostic report to the system clipboard.
      * Returns true on success.
      */
-    fun copyToClipboard(context: Context): Boolean {
-        return try {
+    fun copyToClipboard(context: Context): Boolean =
+        try {
             val report = buildReport(context)
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("Flow Player Diagnostics", report)
@@ -223,17 +256,19 @@ object PlayerDiagnostics {
             Log.e(TAG, "Failed to copy diagnostics", e)
             false
         }
-    }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
 
     private fun formatMs(ms: Long): String {
         if (ms < 0) return "--:--"
         val totalSeconds = ms / 1000
-        val hours   = totalSeconds / 3600
+        val hours = totalSeconds / 3600
         val minutes = (totalSeconds % 3600) / 60
         val seconds = totalSeconds % 60
-        return if (hours > 0) "%d:%02d:%02d".format(hours, minutes, seconds)
-        else               "%d:%02d".format(minutes, seconds)
+        return if (hours > 0) {
+            "%d:%02d:%02d".format(hours, minutes, seconds)
+        } else {
+            "%d:%02d".format(minutes, seconds)
+        }
     }
 }

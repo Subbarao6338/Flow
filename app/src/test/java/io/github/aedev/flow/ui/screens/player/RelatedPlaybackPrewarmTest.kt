@@ -13,8 +13,8 @@ class RelatedPlaybackPrewarmTest {
                 durationMs = 120_000L,
                 isShort = false,
                 isLocal = false,
-                alreadyPrewarmed = false
-            )
+                alreadyPrewarmed = false,
+            ),
         ).isFalse()
     }
 
@@ -27,8 +27,8 @@ class RelatedPlaybackPrewarmTest {
                 durationMs = 120_000L,
                 isShort = false,
                 isLocal = false,
-                alreadyPrewarmed = false
-            )
+                alreadyPrewarmed = false,
+            ),
         ).isTrue()
 
         assertThat(
@@ -38,8 +38,8 @@ class RelatedPlaybackPrewarmTest {
                 durationMs = 40_000L,
                 isShort = false,
                 isLocal = false,
-                alreadyPrewarmed = false
-            )
+                alreadyPrewarmed = false,
+            ),
         ).isTrue()
     }
 
@@ -52,8 +52,8 @@ class RelatedPlaybackPrewarmTest {
                 durationMs = 60_000L,
                 isShort = true,
                 isLocal = false,
-                alreadyPrewarmed = false
-            )
+                alreadyPrewarmed = false,
+            ),
         ).isFalse()
 
         assertThat(
@@ -63,8 +63,8 @@ class RelatedPlaybackPrewarmTest {
                 durationMs = 60_000L,
                 isShort = false,
                 isLocal = true,
-                alreadyPrewarmed = false
-            )
+                alreadyPrewarmed = false,
+            ),
         ).isFalse()
 
         assertThat(
@@ -74,8 +74,8 @@ class RelatedPlaybackPrewarmTest {
                 durationMs = 60_000L,
                 isShort = false,
                 isLocal = false,
-                alreadyPrewarmed = true
-            )
+                alreadyPrewarmed = true,
+            ),
         ).isFalse()
     }
 }

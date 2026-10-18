@@ -37,31 +37,34 @@ private data class TvGuideEntry(
     @StringRes val descriptionRes: Int,
 )
 
-private val navigationEntries = listOf(
-    TvGuideEntry(R.string.tv_guide_key_dpad, R.string.tv_guide_dpad),
-    TvGuideEntry(R.string.tv_guide_key_ok, R.string.tv_guide_ok),
-    TvGuideEntry(R.string.tv_guide_key_back, R.string.tv_guide_back),
-    TvGuideEntry(R.string.tv_guide_key_left_edge, R.string.tv_guide_left_edge),
-    TvGuideEntry(R.string.tv_guide_key_rail, R.string.tv_guide_rail),
-)
+private val navigationEntries =
+    listOf(
+        TvGuideEntry(R.string.tv_guide_key_dpad, R.string.tv_guide_dpad),
+        TvGuideEntry(R.string.tv_guide_key_ok, R.string.tv_guide_ok),
+        TvGuideEntry(R.string.tv_guide_key_back, R.string.tv_guide_back),
+        TvGuideEntry(R.string.tv_guide_key_left_edge, R.string.tv_guide_left_edge),
+        TvGuideEntry(R.string.tv_guide_key_rail, R.string.tv_guide_rail),
+    )
 
-private val searchEntries = listOf(
-    TvGuideEntry(R.string.tv_guide_key_dpad, R.string.tv_guide_search_keyboard),
-    TvGuideEntry(R.string.tv_guide_key_ok, R.string.tv_guide_search_type),
-    TvGuideEntry(R.string.tv_guide_key_edit, R.string.tv_guide_search_edit),
-    TvGuideEntry(R.string.tv_guide_key_voice, R.string.tv_guide_search_voice),
-    TvGuideEntry(R.string.tv_guide_key_right, R.string.tv_guide_search_results),
-)
+private val searchEntries =
+    listOf(
+        TvGuideEntry(R.string.tv_guide_key_dpad, R.string.tv_guide_search_keyboard),
+        TvGuideEntry(R.string.tv_guide_key_ok, R.string.tv_guide_search_type),
+        TvGuideEntry(R.string.tv_guide_key_edit, R.string.tv_guide_search_edit),
+        TvGuideEntry(R.string.tv_guide_key_voice, R.string.tv_guide_search_voice),
+        TvGuideEntry(R.string.tv_guide_key_right, R.string.tv_guide_search_results),
+    )
 
-private val playbackEntries = listOf(
-    TvGuideEntry(R.string.tv_guide_key_ok, R.string.tv_guide_player_toggle),
-    TvGuideEntry(R.string.tv_guide_key_left_right, R.string.tv_guide_player_seek),
-    TvGuideEntry(R.string.tv_guide_key_hold, R.string.tv_guide_player_hold),
-    TvGuideEntry(R.string.tv_guide_key_up, R.string.tv_guide_player_up),
-    TvGuideEntry(R.string.tv_guide_key_down, R.string.tv_guide_player_down),
-    TvGuideEntry(R.string.tv_guide_key_media, R.string.tv_guide_player_media),
-    TvGuideEntry(R.string.tv_guide_key_back, R.string.tv_guide_player_back),
-)
+private val playbackEntries =
+    listOf(
+        TvGuideEntry(R.string.tv_guide_key_ok, R.string.tv_guide_player_toggle),
+        TvGuideEntry(R.string.tv_guide_key_left_right, R.string.tv_guide_player_seek),
+        TvGuideEntry(R.string.tv_guide_key_hold, R.string.tv_guide_player_hold),
+        TvGuideEntry(R.string.tv_guide_key_up, R.string.tv_guide_player_up),
+        TvGuideEntry(R.string.tv_guide_key_down, R.string.tv_guide_player_down),
+        TvGuideEntry(R.string.tv_guide_key_media, R.string.tv_guide_player_media),
+        TvGuideEntry(R.string.tv_guide_key_back, R.string.tv_guide_player_back),
+    )
 
 /** A ten-foot reference for every remote interaction supported by the TV interface. */
 @Composable
@@ -84,13 +87,14 @@ fun TvRemoteGuideScreen(
         },
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    start = dimens.overscanHorizontal,
-                    end = dimens.overscanHorizontal,
-                    bottom = dimens.overscanVertical,
-                ),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = dimens.overscanHorizontal,
+                        end = dimens.overscanHorizontal,
+                        bottom = dimens.overscanVertical,
+                    ),
             horizontalArrangement = Arrangement.spacedBy(18.dp),
         ) {
             TvGuideSection(
@@ -137,9 +141,10 @@ private fun TvGuideSection(
             )
             ProvideTvColumnPivot {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .focusGroup(),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .focusGroup(),
                     contentPadding = PaddingValues(vertical = 6.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
@@ -149,11 +154,12 @@ private fun TvGuideSection(
                     ) { entry ->
                         TvGuideRow(
                             entry = entry,
-                            modifier = if (requestInitialFocus && entry === entries.first()) {
-                                Modifier.tvInitialFocus()
-                            } else {
-                                Modifier
-                            },
+                            modifier =
+                                if (requestInitialFocus && entry === entries.first()) {
+                                    Modifier.tvInitialFocus()
+                                } else {
+                                    Modifier
+                                },
                         )
                     }
                 }
@@ -171,21 +177,24 @@ private fun TvGuideRow(
     val focused = focusState.isFocused
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .tvFocusScale(focusState)
-            .focusable(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .tvFocusScale(focusState)
+                .focusable(),
         shape = MaterialTheme.shapes.medium,
-        color = if (focused) {
-            MaterialTheme.colorScheme.secondaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainer
-        },
-        contentColor = if (focused) {
-            MaterialTheme.colorScheme.onSecondaryContainer
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        },
+        color =
+            if (focused) {
+                MaterialTheme.colorScheme.secondaryContainer
+            } else {
+                MaterialTheme.colorScheme.surfaceContainer
+            },
+        contentColor =
+            if (focused) {
+                MaterialTheme.colorScheme.onSecondaryContainer
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
         tonalElevation = if (focused) 3.dp else 0.dp,
     ) {
         Row(
@@ -208,11 +217,12 @@ private fun TvGuideRow(
             Text(
                 text = stringResource(entry.descriptionRes),
                 style = MaterialTheme.typography.bodySmall,
-                color = if (focused) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
+                color =
+                    if (focused) {
+                        MaterialTheme.colorScheme.onSecondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                 modifier = Modifier.weight(1f),
             )
         }

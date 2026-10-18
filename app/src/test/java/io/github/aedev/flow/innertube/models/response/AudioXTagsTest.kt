@@ -11,12 +11,11 @@ private const val DUBBED_ARABIC = "Cg8KBWFjb250EgZkdWJiZWQKCgoEbGFuZxICYXI"
 private const val DUBBED_CHINESE = "Cg8KBWFjb250EgZkdWJiZWQKDwoEbGFuZxIHemgtSGFucw"
 
 class AudioXTagsTest {
-
     @Test
     fun `decodes the original track tags`() {
         assertEquals(
             mapOf("acont" to "original", "lang" to "en"),
-            AudioXTags.decode(ORIGINAL)
+            AudioXTags.decode(ORIGINAL),
         )
     }
 
@@ -24,7 +23,7 @@ class AudioXTagsTest {
     fun `decodes the drc marker alongside the content role`() {
         assertEquals(
             mapOf("acont" to "original", "drc" to "1", "lang" to "en"),
-            AudioXTags.decode(ORIGINAL_DRC)
+            AudioXTags.decode(ORIGINAL_DRC),
         )
     }
 
@@ -33,7 +32,7 @@ class AudioXTagsTest {
         assertEquals(mapOf("acont" to "dubbed", "lang" to "ar"), AudioXTags.decode(DUBBED_ARABIC))
         assertEquals(
             mapOf("acont" to "dubbed", "lang" to "zh-Hans"),
-            AudioXTags.decode(DUBBED_CHINESE)
+            AudioXTags.decode(DUBBED_CHINESE),
         )
     }
 
@@ -46,7 +45,6 @@ class AudioXTagsTest {
 }
 
 class AudioFormatMetadataTest {
-
     private fun audioFormat(
         itag: Int = 140,
         xtags: String? = null,
@@ -73,13 +71,14 @@ class AudioFormatMetadataTest {
         loudnessDb = null,
         lastModified = null,
         signatureCipher = null,
-        audioTrack = trackId?.let {
-            PlayerResponse.StreamingData.Format.AudioTrack(
-                displayName = displayName,
-                id = it,
-                audioIsDefault = audioIsDefault,
-            )
-        },
+        audioTrack =
+            trackId?.let {
+                PlayerResponse.StreamingData.Format.AudioTrack(
+                    displayName = displayName,
+                    id = it,
+                    audioIsDefault = audioIsDefault,
+                )
+            },
         isDrc = isDrc,
         xtags = xtags,
     )

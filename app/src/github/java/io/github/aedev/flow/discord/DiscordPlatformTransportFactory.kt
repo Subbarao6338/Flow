@@ -9,10 +9,11 @@ class DiscordPlatformTransportFactory : DiscordPresenceTransportFactory {
         context: Context,
         okHttpClient: OkHttpClient,
         tokenStore: DiscordTokenStore,
-    ): DiscordPresenceTransport = KizzyDiscordPresenceTransport(
-        context = context.applicationContext,
-        client = okHttpClient,
-        tokenStore = tokenStore,
-        applicationId = BuildConfig.DISCORD_APPLICATION_ID,
-    )
+    ): DiscordPresenceTransport =
+        KizzyDiscordPresenceTransport(
+            context = context.applicationContext,
+            client = okHttpClient,
+            tokenStore = tokenStore,
+            applicationId = BuildConfig.DISCORD_APPLICATION_ID,
+        )
 }

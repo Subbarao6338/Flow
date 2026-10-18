@@ -19,10 +19,11 @@ class SabrMediaDecoderTest {
     @Test
     fun gzipMediaIsDecodedBeforeDelivery() {
         val media = "SABR segment payload".encodeToByteArray()
-        val compressed = ByteArrayOutputStream().use { output ->
-            GZIPOutputStream(output).use { it.write(media) }
-            output.toByteArray()
-        }
+        val compressed =
+            ByteArrayOutputStream().use { output ->
+                GZIPOutputStream(output).use { it.write(media) }
+                output.toByteArray()
+            }
 
         assertArrayEquals(media, SabrMediaDecoder.decode(1, compressed))
     }

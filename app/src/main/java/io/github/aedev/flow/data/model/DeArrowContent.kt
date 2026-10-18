@@ -4,7 +4,7 @@ data class DeArrowTitle(
     val title: String = "",
     val votes: Int = 0,
     val locked: Boolean = false,
-    val original: Boolean = false
+    val original: Boolean = false,
 )
 
 data class DeArrowThumbnail(
@@ -12,14 +12,14 @@ data class DeArrowThumbnail(
     val thumbnail: String? = null,
     val votes: Int = 0,
     val locked: Boolean = false,
-    val original: Boolean = false
+    val original: Boolean = false,
 )
 
 data class DeArrowContent(
     val titles: List<DeArrowTitle> = emptyList(),
     val thumbnails: List<DeArrowThumbnail> = emptyList(),
     val randomTime: Float? = null,
-    val videoDuration: Float? = null
+    val videoDuration: Float? = null,
 )
 
 /**
@@ -27,5 +27,5 @@ data class DeArrowContent(
  */
 data class DeArrowResult(
     val title: String? = null,
-    val thumbnailUrl: String? = null
+    val thumbnailUrl: String? = null,
 )

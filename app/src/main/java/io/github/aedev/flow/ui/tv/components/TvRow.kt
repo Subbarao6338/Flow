@@ -40,15 +40,17 @@ fun <T> TvMediaRow(
         }
         ProvideTvRowPivot {
             LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .tvRowFocus(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .tvRowFocus(),
                 horizontalArrangement = Arrangement.spacedBy(dimens.itemSpacing),
                 // Vertical headroom so the focus scale never clips at the row bounds.
-                contentPadding = PaddingValues(
-                    horizontal = dimens.overscanHorizontal,
-                    vertical = 12.dp,
-                ),
+                contentPadding =
+                    PaddingValues(
+                        horizontal = dimens.overscanHorizontal,
+                        vertical = 12.dp,
+                    ),
             ) {
                 items(items = items, key = key) { item -> card(item) }
             }

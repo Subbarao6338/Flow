@@ -4,17 +4,18 @@ package io.github.aedev.flow.platform
 enum class AppUiMode {
     AUTOMATIC,
     MOBILE,
-    TV;
+    TV,
+    ;
 
-    fun resolve(deviceFormFactor: DeviceFormFactor): AppUiRoot = when (this) {
-        AUTOMATIC -> if (deviceFormFactor == DeviceFormFactor.TV) AppUiRoot.TV else AppUiRoot.MOBILE
-        MOBILE -> AppUiRoot.MOBILE
-        TV -> AppUiRoot.TV
-    }
+    fun resolve(deviceFormFactor: DeviceFormFactor): AppUiRoot =
+        when (this) {
+            AUTOMATIC -> if (deviceFormFactor == DeviceFormFactor.TV) AppUiRoot.TV else AppUiRoot.MOBILE
+            MOBILE -> AppUiRoot.MOBILE
+            TV -> AppUiRoot.TV
+        }
 
     companion object {
-        fun fromStorage(value: String?): AppUiMode =
-            entries.firstOrNull { it.name == value } ?: AUTOMATIC
+        fun fromStorage(value: String?): AppUiMode = entries.firstOrNull { it.name == value } ?: AUTOMATIC
     }
 }
 

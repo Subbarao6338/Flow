@@ -103,22 +103,25 @@ private fun TvKey(
         onClick = onClick,
         modifier = modifier.onFocusChanged { focused = it.isFocused },
         shape = MaterialTheme.shapes.small,
-        color = if (focused) {
-            MaterialTheme.colorScheme.inverseSurface
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHigh
-        },
-        contentColor = if (focused) {
-            MaterialTheme.colorScheme.inverseOnSurface
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        },
+        color =
+            if (focused) {
+                MaterialTheme.colorScheme.inverseSurface
+            } else {
+                MaterialTheme.colorScheme.surfaceContainerHigh
+            },
+        contentColor =
+            if (focused) {
+                MaterialTheme.colorScheme.inverseOnSurface
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
     ) {
         Box(
-            modifier = Modifier.size(
-                width = if (wide) KEY_SIZE * 2 + KEY_GAP else KEY_SIZE,
-                height = KEY_SIZE,
-            ),
+            modifier =
+                Modifier.size(
+                    width = if (wide) KEY_SIZE * 2 + KEY_GAP else KEY_SIZE,
+                    height = KEY_SIZE,
+                ),
             contentAlignment = Alignment.Center,
         ) {
             content()

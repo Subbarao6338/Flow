@@ -21,37 +21,43 @@ class DiscordLoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
-        loginWebView = WebView(this).apply {
-            setBackgroundColor(Color.TRANSPARENT)
-            settings.javaScriptEnabled = true
-            settings.domStorageEnabled = true
-            settings.allowFileAccess = false
-            settings.allowContentAccess = false
-            settings.javaScriptCanOpenWindowsAutomatically = false
-            settings.setSupportMultipleWindows(false)
-            settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            settings.userAgentString = settings.userAgentString.replace("; wv", "")
-            webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(
-                    view: WebView,
-                    request: WebResourceRequest,
-                ): Boolean {
-                    if (!request.isForMainFrame) return false
-                    return handleNavigation(view, request.url.toString())
-                }
+        loginWebView =
+            WebView(this).apply {
+                setBackgroundColor(Color.TRANSPARENT)
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                settings.allowFileAccess = false
+                settings.allowContentAccess = false
+                settings.javaScriptCanOpenWindowsAutomatically = false
+                settings.setSupportMultipleWindows(false)
+                settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                settings.userAgentString = settings.userAgentString.replace("; wv", "")
+                webViewClient =
+                    object : WebViewClient() {
+                        override fun shouldOverrideUrlLoading(
+                            view: WebView,
+                            request: WebResourceRequest,
+                        ): Boolean {
+                            if (!request.isForMainFrame) return false
+                            return handleNavigation(view, request.url.toString())
+                        }
 
-                @Deprecated("Deprecated in Java")
-                override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                    return handleNavigation(view, url)
-                }
+                        @Deprecated("Deprecated in Java")
+                        override fun shouldOverrideUrlLoading(
+                            view: WebView,
+                            url: String,
+                        ): Boolean = handleNavigation(view, url)
 
-                override fun onPageFinished(view: WebView, url: String) {
-                    super.onPageFinished(view, url)
-                    requestTokenWhenAuthenticated(view, url)
-                }
+                        override fun onPageFinished(
+                            view: WebView,
+                            url: String,
+                        ) {
+                            super.onPageFinished(view, url)
+                            requestTokenWhenAuthenticated(view, url)
+                        }
+                    }
+                loadUrl(DISCORD_LOGIN_URL)
             }
-            loadUrl(DISCORD_LOGIN_URL)
-        }
         setContentView(loginWebView)
     }
 
@@ -63,13 +69,19 @@ class DiscordLoginActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-    private fun handleNavigation(webView: WebView, url: String): Boolean {
+    private fun handleNavigation(
+        webView: WebView,
+        url: String,
+    ): Boolean {
         if (!DiscordLoginTokenExtractor.isAllowedNavigation(url)) return true
         requestTokenWhenAuthenticated(webView, url)
         return false
     }
 
-    private fun requestTokenWhenAuthenticated(webView: WebView, url: String) {
+    private fun requestTokenWhenAuthenticated(
+        webView: WebView,
+        url: String,
+    ) {
         if (!completed && DiscordLoginTokenExtractor.isAuthenticatedAppUrl(url)) {
             readToken(webView)
         }
@@ -111,11 +123,13 @@ class DiscordLoginActivity : ComponentActivity() {
 
     private fun clearDiscordCookies(onComplete: () -> Unit) {
         val cookieManager = CookieManager.getInstance()
-        val cookieNames = cookieManager.getCookie(DISCORD_ORIGIN)
-            .orEmpty()
-            .split(';')
-            .mapNotNull { cookie -> cookie.substringBefore('=').trim().takeIf(String::isNotEmpty) }
-            .distinct()
+        val cookieNames =
+            cookieManager
+                .getCookie(DISCORD_ORIGIN)
+                .orEmpty()
+                .split(';')
+                .mapNotNull { cookie -> cookie.substringBefore('=').trim().takeIf(String::isNotEmpty) }
+                .distinct()
         if (cookieNames.isEmpty()) {
             cookieManager.flush()
             onComplete()
@@ -140,13 +154,14 @@ class DiscordLoginActivity : ComponentActivity() {
     private companion object {
         const val DISCORD_LOGIN_URL = "https://discord.com/login"
         const val DISCORD_ORIGIN = "https://discord.com"
-        const val TOKEN_SCRIPT = "(function(){" +
-            "var frame=document.createElement('iframe');" +
-            "frame.style.display='none';" +
-            "document.body.appendChild(frame);" +
-            "var token=frame.contentWindow.localStorage.getItem('token');" +
-            "frame.remove();" +
-            "return token;" +
-            "})()"
+        const val TOKEN_SCRIPT =
+            "(function(){" +
+                "var frame=document.createElement('iframe');" +
+                "frame.style.display='none';" +
+                "document.body.appendChild(frame);" +
+                "var token=frame.contentWindow.localStorage.getItem('token');" +
+                "frame.remove();" +
+                "return token;" +
+                "})()"
     }
 }

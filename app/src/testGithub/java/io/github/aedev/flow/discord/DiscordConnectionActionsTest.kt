@@ -8,41 +8,45 @@ import org.junit.Test
 
 class DiscordConnectionActionsTest {
     @Test
-    fun `retry reconnects with stored credentials`() = runTest {
-        val transport = RecordingTransport()
-        val tokens = DiscordAuthTokens("saved", "", Long.MAX_VALUE)
+    fun `retry reconnects with stored credentials`() =
+        runTest {
+            val transport = RecordingTransport()
+            val tokens = DiscordAuthTokens("saved", "", Long.MAX_VALUE)
 
-        retryDiscordConnection(transport) { tokens }
+            retryDiscordConnection(transport) { tokens }
 
-        assertThat(transport.connectedTokens).isEqualTo(tokens)
-        assertThat(transport.linkCalls).isEqualTo(0)
-    }
-
-    @Test
-    fun `retry starts account linking when credentials are unavailable`() = runTest {
-        val transport = RecordingTransport()
-
-        retryDiscordConnection(transport) { null }
-
-        assertThat(transport.connectedTokens).isNull()
-        assertThat(transport.linkCalls).isEqualTo(1)
-    }
+            assertThat(transport.connectedTokens).isEqualTo(tokens)
+            assertThat(transport.linkCalls).isEqualTo(0)
+        }
 
     @Test
-    fun `unlink disables sharing clears transport and removes account label`() = runTest {
-        val transport = RecordingTransport()
-        val events = mutableListOf<String>()
+    fun `retry starts account linking when credentials are unavailable`() =
+        runTest {
+            val transport = RecordingTransport()
 
-        val result = unlinkDiscordConnection(
-            transport = transport,
-            disablePreference = { events += "disabled" },
-            clearAccountLabel = { events += "label-cleared" },
-        )
+            retryDiscordConnection(transport) { null }
 
-        assertThat(result).isTrue()
-        assertThat(transport.unlinkCalls).isEqualTo(1)
-        assertThat(events).containsExactly("disabled", "label-cleared").inOrder()
-    }
+            assertThat(transport.connectedTokens).isNull()
+            assertThat(transport.linkCalls).isEqualTo(1)
+        }
+
+    @Test
+    fun `unlink disables sharing clears transport and removes account label`() =
+        runTest {
+            val transport = RecordingTransport()
+            val events = mutableListOf<String>()
+
+            val result =
+                unlinkDiscordConnection(
+                    transport = transport,
+                    disablePreference = { events += "disabled" },
+                    clearAccountLabel = { events += "label-cleared" },
+                )
+
+            assertThat(result).isTrue()
+            assertThat(transport.unlinkCalls).isEqualTo(1)
+            assertThat(events).containsExactly("disabled", "label-cleared").inOrder()
+        }
 
     private class RecordingTransport : DiscordPresenceTransport {
         override val isAvailable = true
@@ -66,7 +70,9 @@ class DiscordConnectionActionsTest {
         }
 
         override suspend fun update(payload: DiscordPresencePayload) = true
+
         override suspend fun clear() = true
+
         override suspend fun disconnect() = true
 
         override suspend fun unlink(): Boolean {

@@ -12,11 +12,18 @@ internal object ServicePlaybackLoadPolicy {
         playerVideoId: String?,
         globalVideoId: String?,
         isPreparedForRequestedVideo: Boolean,
-    ): ServicePlaybackCommitDecision = when {
-        playerVideoId != requestedVideoId || globalVideoId != requestedVideoId ->
-            ServicePlaybackCommitDecision.SKIP_STALE_REQUEST
-        isPreparedForRequestedVideo ->
-            ServicePlaybackCommitDecision.SKIP_ALREADY_PREPARED
-        else -> ServicePlaybackCommitDecision.COMMIT
-    }
+    ): ServicePlaybackCommitDecision =
+        when {
+            playerVideoId != requestedVideoId || globalVideoId != requestedVideoId -> {
+                ServicePlaybackCommitDecision.SKIP_STALE_REQUEST
+            }
+
+            isPreparedForRequestedVideo -> {
+                ServicePlaybackCommitDecision.SKIP_ALREADY_PREPARED
+            }
+
+            else -> {
+                ServicePlaybackCommitDecision.COMMIT
+            }
+        }
 }

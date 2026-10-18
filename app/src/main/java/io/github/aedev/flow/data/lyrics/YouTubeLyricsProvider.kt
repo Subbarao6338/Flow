@@ -15,17 +15,20 @@ class YouTubeLyricsProvider : LyricsProvider {
         title: String,
         artist: String,
         duration: Int,
-        album: String?
-    ): Result<List<LyricsEntry>> = withContext(Dispatchers.IO) {
-        try {
-            val lyrics = io.github.aedev.flow.data.newmusic.InnertubeMusicService.fetchLyrics(id)
-            if (lyrics != null) {
-                Result.success(listOf(LyricsEntry(time = 0L, text = lyrics)))
-            } else {
-                Result.failure(Exception("No YouTube lyrics found"))
+        album: String?,
+    ): Result<List<LyricsEntry>> =
+        withContext(Dispatchers.IO) {
+            try {
+                val lyrics =
+                    io.github.aedev.flow.data.newmusic.InnertubeMusicService
+                        .fetchLyrics(id)
+                if (lyrics != null) {
+                    Result.success(listOf(LyricsEntry(time = 0L, text = lyrics)))
+                } else {
+                    Result.failure(Exception("No YouTube lyrics found"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
             }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
-    }
 }

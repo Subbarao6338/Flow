@@ -6,5 +6,5 @@ data class CastStreamVariant(
     val height: Int,
     val bitrate: Int,
     val mime: String = "video/mp4",
-    val codec: String = "avc1.64001F"
+    val codec: String = "avc1.64001F",
 )

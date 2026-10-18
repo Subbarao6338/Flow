@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SubscriptionGroupDao {
-
     @Query("SELECT * FROM subscription_groups ORDER BY sortOrder ASC")
     fun getAllGroups(): Flow<List<SubscriptionGroupEntity>>
 

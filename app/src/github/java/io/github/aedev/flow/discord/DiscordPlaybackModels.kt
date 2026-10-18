@@ -41,7 +41,10 @@ data class SentPresence(
 )
 
 sealed interface DiscordPresenceDecision {
-    data class Send(val payload: DiscordPresencePayload) : DiscordPresenceDecision
+    data class Send(
+        val payload: DiscordPresencePayload,
+    ) : DiscordPresenceDecision
+
     data object Skip : DiscordPresenceDecision
 }
 

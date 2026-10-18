@@ -9,13 +9,13 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class YTItemKeysTest {
-
     @Test
     fun `identity includes item type so different result types do not collide`() {
-        val items = listOf(
-            song(id = "shared"),
-            album(id = "shared")
-        )
+        val items =
+            listOf(
+                song(id = "shared"),
+                album(id = "shared"),
+            )
 
         val result = items.distinctByStableIdentity()
 
@@ -24,23 +24,25 @@ class YTItemKeysTest {
 
     @Test
     fun `summary normalization removes duplicates that share a lazy-key namespace`() {
-        val page = SearchSummaryPage(
-            summaries = listOf(
-                SearchSummary(
-                    title = "More results",
-                    items = listOf(song("first"), song("second"), song("first"))
-                ),
-                SearchSummary(
-                    title = "More results",
-                    items = listOf(song("second"), song("third"))
-                ),
-                SearchSummary(
-                    title = "Songs",
-                    items = listOf(song("first"))
-                )
-            ),
-            continuation = "next"
-        )
+        val page =
+            SearchSummaryPage(
+                summaries =
+                    listOf(
+                        SearchSummary(
+                            title = "More results",
+                            items = listOf(song("first"), song("second"), song("first")),
+                        ),
+                        SearchSummary(
+                            title = "More results",
+                            items = listOf(song("second"), song("third")),
+                        ),
+                        SearchSummary(
+                            title = "Songs",
+                            items = listOf(song("first")),
+                        ),
+                    ),
+                continuation = "next",
+            )
 
         val result = page.distinctItemsForLazyKeys()
 
@@ -48,9 +50,9 @@ class YTItemKeysTest {
             listOf(
                 listOf("first", "second"),
                 listOf("third"),
-                listOf("first")
+                listOf("first"),
             ),
-            result.summaries.map { summary -> summary.items.map { it.id } }
+            result.summaries.map { summary -> summary.items.map { it.id } },
         )
         assertEquals("next", result.continuation)
     }
@@ -62,18 +64,20 @@ class YTItemKeysTest {
         assertEquals(listOf("valid"), result.map { it.id })
     }
 
-    private fun song(id: String) = SongItem(
-        id = id,
-        title = id,
-        artists = listOf(Artist(name = "Artist", id = "channel")),
-        thumbnail = "thumbnail"
-    )
+    private fun song(id: String) =
+        SongItem(
+            id = id,
+            title = id,
+            artists = listOf(Artist(name = "Artist", id = "channel")),
+            thumbnail = "thumbnail",
+        )
 
-    private fun album(id: String) = AlbumItem(
-        browseId = id,
-        playlistId = "playlist-$id",
-        title = id,
-        artists = emptyList(),
-        thumbnail = "thumbnail"
-    )
+    private fun album(id: String) =
+        AlbumItem(
+            browseId = id,
+            playlistId = "playlist-$id",
+            title = id,
+            artists = emptyList(),
+            thumbnail = "thumbnail",
+        )
 }

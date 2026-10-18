@@ -1,6 +1,8 @@
 package io.github.aedev.flow.player.sabr.proto
 
-class ProtobufReader(private val data: ByteArray) {
+class ProtobufReader(
+    private val data: ByteArray,
+) {
     private var pos = 0
 
     val isAtEnd: Boolean get() = pos >= data.size
@@ -9,13 +11,18 @@ class ProtobufReader(private val data: ByteArray) {
         val fieldNumber: Int,
         val wireType: Int,
         val varintValue: Long = 0,
-        val bytesValue: ByteArray = EMPTY_BYTES
+        val bytesValue: ByteArray = EMPTY_BYTES,
     ) {
         fun asInt(): Int = varintValue.toInt()
+
         fun asLong(): Long = varintValue
+
         fun asBool(): Boolean = varintValue != 0L
+
         fun asString(): String = bytesValue.toString(Charsets.UTF_8)
+
         fun asBytes(): ByteArray = bytesValue
+
         fun asMessage(): ProtobufReader = ProtobufReader(bytesValue)
 
         companion object {
@@ -35,6 +42,7 @@ class ProtobufReader(private val data: ByteArray) {
                 val value = readRawVarint()
                 Field(fieldNumber, wireType, varintValue = value)
             }
+
             WIRE_FIXED64 -> {
                 var value = 0L
                 for (i in 0 until 8) {
@@ -42,12 +50,14 @@ class ProtobufReader(private val data: ByteArray) {
                 }
                 Field(fieldNumber, wireType, varintValue = value)
             }
+
             WIRE_LENGTH_DELIMITED -> {
                 val length = readRawVarint().toInt()
                 val bytes = data.copyOfRange(pos, pos + length)
                 pos += length
                 Field(fieldNumber, wireType, bytesValue = bytes)
             }
+
             WIRE_FIXED32 -> {
                 var value = 0
                 for (i in 0 until 4) {
@@ -55,10 +65,14 @@ class ProtobufReader(private val data: ByteArray) {
                 }
                 Field(fieldNumber, wireType, varintValue = value.toLong())
             }
+
             3, 4 -> {
                 Field(fieldNumber, wireType)
             }
-            else -> throw IllegalStateException("Unknown wire type: $wireType at position $pos")
+
+            else -> {
+                throw IllegalStateException("Unknown wire type: $wireType at position $pos")
+            }
         }
     }
 

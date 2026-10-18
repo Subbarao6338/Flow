@@ -12,7 +12,6 @@ import org.junit.Test
 
 /** I-5: a Short's watch signal reflects what actually happened, not a fabricated full watch. */
 class ShortWatchClassifierTest {
-
     @Test
     fun `sub-2s flick is a skip with its real fraction`() {
         val s = ShortWatchClassifier.classify(positionMs = 1_500L, durationMs = 30_000L, videoDurationSec = 30)

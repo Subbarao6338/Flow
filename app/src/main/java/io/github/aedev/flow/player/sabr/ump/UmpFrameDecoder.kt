@@ -5,10 +5,9 @@ import java.io.ByteArrayOutputStream
 
 data class UmpFrame(
     val type: Int,
-    val payload: ByteArray
+    val payload: ByteArray,
 ) {
-    override fun toString(): String =
-        "UmpFrame(type=${UmpPartType.nameOf(type)}, payloadSize=${payload.size})"
+    override fun toString(): String = "UmpFrame(type=${UmpPartType.nameOf(type)}, payloadSize=${payload.size})"
 }
 
 class UmpFrameDecoder {
@@ -29,7 +28,11 @@ class UmpFrameDecoder {
 
     private val frameQueue = ArrayDeque<UmpFrame>()
 
-    fun feed(data: ByteArray, offset: Int = 0, length: Int = data.size) {
+    fun feed(
+        data: ByteArray,
+        offset: Int = 0,
+        length: Int = data.size,
+    ) {
         if (length <= 0) return
 
         if (dirty || bufferPos < bufferLen) {
@@ -64,19 +67,21 @@ class UmpFrameDecoder {
 
     private fun parseAvailable() {
         if (dirty) {
-            val leftover = if (bufferPos < bufferLen) {
-                bufferData.copyOfRange(bufferPos, bufferLen)
-            } else {
-                ByteArray(0)
-            }
+            val leftover =
+                if (bufferPos < bufferLen) {
+                    bufferData.copyOfRange(bufferPos, bufferLen)
+                } else {
+                    ByteArray(0)
+                }
             val accumulated = buffer.toByteArray()
             buffer.reset()
 
-            bufferData = if (leftover.isNotEmpty()) {
-                leftover + accumulated
-            } else {
-                accumulated
-            }
+            bufferData =
+                if (leftover.isNotEmpty()) {
+                    leftover + accumulated
+                } else {
+                    accumulated
+                }
             bufferPos = 0
             bufferLen = bufferData.size
             dirty = false
@@ -92,11 +97,12 @@ class UmpFrameDecoder {
                 val sizeResult = tryReadVarInt() ?: break
                 currentSize = sizeResult
                 currentPayloadRead = 0L
-                payloadAccumulator = if (currentSize > 0) {
-                    ByteArrayOutputStream(currentSize.coerceAtMost(65536).toInt())
-                } else {
-                    null
-                }
+                payloadAccumulator =
+                    if (currentSize > 0) {
+                        ByteArrayOutputStream(currentSize.coerceAtMost(65536).toInt())
+                    } else {
+                        null
+                    }
             }
 
             val remaining = currentSize - currentPayloadRead
@@ -140,13 +146,14 @@ class UmpFrameDecoder {
         if (bufferPos >= bufferLen) return null
 
         val firstByte = bufferData[bufferPos].toInt() and 0xFF
-        val size = try {
-            UmpVarInt.sizeOf(firstByte)
-        } catch (e: Exception) {
-            Log.e(TAG, "Invalid varint first byte: 0x${firstByte.toString(16)}", e)
-            bufferPos++
-            return null
-        }
+        val size =
+            try {
+                UmpVarInt.sizeOf(firstByte)
+            } catch (e: Exception) {
+                Log.e(TAG, "Invalid varint first byte: 0x${firstByte.toString(16)}", e)
+                bufferPos++
+                return null
+            }
 
         if (bufferPos + size > bufferLen) return null
 

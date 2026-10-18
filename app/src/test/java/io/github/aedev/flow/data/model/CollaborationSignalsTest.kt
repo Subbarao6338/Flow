@@ -38,7 +38,7 @@ class CollaborationSignalsTest {
         assertTrue(
             video(
                 channelThumbnailUrls = listOf("first", "second"),
-            ).needsCollaboratorResolution()
+            ).needsCollaboratorResolution(),
         )
     }
 
@@ -47,11 +47,12 @@ class CollaborationSignalsTest {
         assertFalse(
             video(
                 channelName = "First Artist & Second Artist",
-                collaborators = listOf(
-                    VideoCollaborator(name = "First", channelId = "UC-first"),
-                    VideoCollaborator(name = "Second", channelId = "UC-second"),
-                ),
-            ).needsCollaboratorResolution()
+                collaborators =
+                    listOf(
+                        VideoCollaborator(name = "First", channelId = "UC-first"),
+                        VideoCollaborator(name = "Second", channelId = "UC-second"),
+                    ),
+            ).needsCollaboratorResolution(),
         )
     }
 

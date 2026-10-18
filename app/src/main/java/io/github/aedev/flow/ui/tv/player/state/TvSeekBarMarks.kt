@@ -28,23 +28,24 @@ data class TvSeekBarMarks(
             if (durationMs <= 0L) return TvSeekBarMarks(emptyList(), emptyList())
             val durationSec = durationMs / 1_000f
 
-            val chapters = chapterStartSeconds
-                .asSequence()
-                .filter { it > 0 && it < durationSec }
-                .map { it / durationSec }
-                .toList()
+            val chapters =
+                chapterStartSeconds
+                    .asSequence()
+                    .filter { it > 0 && it < durationSec }
+                    .map { it / durationSec }
+                    .toList()
 
-            val segments = sponsorSegments
-                .asSequence()
-                .filter { it.endTime > it.startTime && it.startTime < durationSec }
-                .map {
-                    Segment(
-                        startFraction = (it.startTime / durationSec).coerceIn(0f, 1f),
-                        endFraction = (it.endTime / durationSec).coerceIn(0f, 1f),
-                        category = it.category,
-                    )
-                }
-                .toList()
+            val segments =
+                sponsorSegments
+                    .asSequence()
+                    .filter { it.endTime > it.startTime && it.startTime < durationSec }
+                    .map {
+                        Segment(
+                            startFraction = (it.startTime / durationSec).coerceIn(0f, 1f),
+                            endFraction = (it.endTime / durationSec).coerceIn(0f, 1f),
+                            category = it.category,
+                        )
+                    }.toList()
 
             return TvSeekBarMarks(chapters, segments)
         }

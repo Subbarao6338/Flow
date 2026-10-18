@@ -1,7 +1,7 @@
 package io.github.aedev.flow.data.lyrics
 
 class LyricsProviderRegistry(
-    private val providerMap: Map<String, LyricsProvider>
+    private val providerMap: Map<String, LyricsProvider>,
 ) {
     val providerNames: List<String> = providerMap.keys.toList()
 
@@ -12,20 +12,19 @@ class LyricsProviderRegistry(
         return orderString.split(",").map { it.trim() }.filter { it in providerNames }
     }
 
-    fun serializeProviderOrder(providers: List<String>): String {
-        return providers.filter { it in providerNames }.joinToString(",")
-    }
+    fun serializeProviderOrder(providers: List<String>): String = providers.filter { it in providerNames }.joinToString(",")
 
-    fun getDefaultProviderOrder(): List<String> = listOf(
-        "BetterLyrics",
-        "LyricsPlus",
-        "SimpMusic",
-        "KuGou",
-        "Paxsenix",
-        "LrcLib",
-        "YouTubeSubtitle",
-        "YouTube",
-    ).filter { it in providerNames }
+    fun getDefaultProviderOrder(): List<String> =
+        listOf(
+            "BetterLyrics",
+            "LyricsPlus",
+            "SimpMusic",
+            "KuGou",
+            "Paxsenix",
+            "LrcLib",
+            "YouTubeSubtitle",
+            "YouTube",
+        ).filter { it in providerNames }
 
     fun getOrderedProviders(orderString: String): List<LyricsProvider> {
         val order = deserializeProviderOrder(orderString)
@@ -36,16 +35,17 @@ class LyricsProviderRegistry(
 
     companion object {
         fun default(): LyricsProviderRegistry {
-            val providers = listOf(
-                BetterLyricsProvider(),
-                LyricsPlusProvider(),
-                SimpMusicLyricsProvider(),
-                KuGouLyricsProvider(),
-                PaxsenixLyricsProvider(),
-                LrcLibLyricsProvider(),
-                YouTubeSubtitleLyricsProvider(),
-                YouTubeLyricsProvider(),
-            )
+            val providers =
+                listOf(
+                    BetterLyricsProvider(),
+                    LyricsPlusProvider(),
+                    SimpMusicLyricsProvider(),
+                    KuGouLyricsProvider(),
+                    PaxsenixLyricsProvider(),
+                    LrcLibLyricsProvider(),
+                    YouTubeSubtitleLyricsProvider(),
+                    YouTubeLyricsProvider(),
+                )
             return LyricsProviderRegistry(providers.associateBy { it.name })
         }
     }

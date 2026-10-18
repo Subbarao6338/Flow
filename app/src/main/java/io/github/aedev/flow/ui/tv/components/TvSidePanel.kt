@@ -68,31 +68,33 @@ fun BoxScope.TvSidePanel(
         exit = fadeOut() + slideOutHorizontally { it / 3 },
     ) {
         Surface(
-            modifier = Modifier
-                .width(dimens.sidePanelWidth)
-                .fillMaxHeight(),
+            modifier =
+                Modifier
+                    .width(dimens.sidePanelWidth)
+                    .fillMaxHeight(),
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             tonalElevation = 3.dp,
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .onFocusChanged { panelHasFocus = it.hasFocus }
-                    // Trap: no D-pad direction may move focus out of the panel.
-                    .focusProperties {
-                        @OptIn(ExperimentalComposeUiApi::class)
-                        exit = { FocusRequester.Cancel }
-                    }
-                    .focusGroup()
-                    .padding(
-                        horizontal = 24.dp,
-                        vertical = dimens.overscanVertical,
-                    ),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .onFocusChanged { panelHasFocus = it.hasFocus }
+                        // Trap: no D-pad direction may move focus out of the panel.
+                        .focusProperties {
+                            @OptIn(ExperimentalComposeUiApi::class)
+                            exit = { FocusRequester.Cancel }
+                        }.focusGroup()
+                        .padding(
+                            horizontal = 24.dp,
+                            vertical = dimens.overscanVertical,
+                        ),
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
@@ -113,7 +115,7 @@ fun BoxScope.TvSidePanel(
                     Modifier
                         .weight(1f)
                         .focusRequester(firstFocusRequester)
-                        .focusGroup()
+                        .focusGroup(),
                 ) {
                     Column(content = content)
                 }

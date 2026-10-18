@@ -15,7 +15,7 @@ class TvBackModelTest {
                             hasTabHistory = history,
                             currentTab = tab,
                             railHasFocus = rail,
-                        )
+                        ),
                     ).isEqualTo(TvBackAction.POP_DETAIL)
                 }
             }
@@ -31,7 +31,7 @@ class TvBackModelTest {
                     hasTabHistory = true,
                     currentTab = tab,
                     railHasFocus = false,
-                )
+                ),
             ).isEqualTo(TvBackAction.POP_TAB)
         }
     }
@@ -48,7 +48,7 @@ class TvBackModelTest {
                             hasTabHistory = false,
                             currentTab = tab,
                             railHasFocus = rail,
-                        )
+                        ),
                     ).isEqualTo(TvBackAction.GO_HOME)
                 }
             }
@@ -62,7 +62,7 @@ class TvBackModelTest {
                 hasTabHistory = false,
                 currentTab = TvDestination.HOME,
                 railHasFocus = false,
-            )
+            ),
         ).isEqualTo(TvBackAction.FOCUS_RAIL)
     }
 
@@ -74,7 +74,7 @@ class TvBackModelTest {
                 hasTabHistory = false,
                 currentTab = TvDestination.HOME,
                 railHasFocus = true,
-            )
+            ),
         ).isEqualTo(TvBackAction.EXIT)
     }
 }

@@ -9,9 +9,7 @@ import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import io.github.aedev.flow.service.VideoPlayerService
 
-
 class BackgroundServiceManager {
-
     companion object {
         private const val TAG = "BackgroundServiceMgr"
     }
@@ -21,7 +19,13 @@ class BackgroundServiceManager {
     /**
      * Connect a controller to the video MediaSessionService, which starts it
      */
-    fun startService(context: Context?, videoId: String, title: String, channel: String, thumbnail: String) {
+    fun startService(
+        context: Context?,
+        videoId: String,
+        title: String,
+        channel: String,
+        thumbnail: String,
+    ) {
         val ctx = context?.applicationContext ?: return
         if (controllerFuture != null) {
             Log.w(TAG, "Video MediaSessionService controller already connected for $videoId")

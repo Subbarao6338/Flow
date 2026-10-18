@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class SubscriptionGroupEntity(
     @PrimaryKey val name: String,
     val channelIds: String = "",
-    val sortOrder: Int = 0
+    val sortOrder: Int = 0,
 )

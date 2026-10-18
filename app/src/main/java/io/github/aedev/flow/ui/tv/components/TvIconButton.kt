@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -50,33 +50,37 @@ fun TvIconButton(
     colors: TvIconButtonColors? = null,
 ) {
     var focused by remember { mutableStateOf(false) }
-    val resolved = colors ?: TvIconButtonColors(
-        container = MaterialTheme.colorScheme.surfaceContainerHigh,
-        content = MaterialTheme.colorScheme.onSurface,
-        focusedContainer = MaterialTheme.colorScheme.inverseSurface,
-        focusedContent = MaterialTheme.colorScheme.inverseOnSurface,
-        activeContainer = MaterialTheme.colorScheme.primary,
-        activeContent = MaterialTheme.colorScheme.onPrimary,
-    )
+    val resolved =
+        colors ?: TvIconButtonColors(
+            container = MaterialTheme.colorScheme.surfaceContainerHigh,
+            content = MaterialTheme.colorScheme.onSurface,
+            focusedContainer = MaterialTheme.colorScheme.inverseSurface,
+            focusedContent = MaterialTheme.colorScheme.inverseOnSurface,
+            activeContainer = MaterialTheme.colorScheme.primary,
+            activeContent = MaterialTheme.colorScheme.onPrimary,
+        )
 
     Surface(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier
-            .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier)
-            .onFocusChanged { focused = it.isFocused },
+        modifier =
+            modifier
+                .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier)
+                .onFocusChanged { focused = it.isFocused },
         shape = CircleShape,
-        color = when {
-            focused -> resolved.focusedContainer
-            active -> resolved.activeContainer
-            else -> resolved.container
-        },
-        contentColor = when {
-            !enabled -> resolved.content.copy(alpha = 0.38f)
-            focused -> resolved.focusedContent
-            active -> resolved.activeContent
-            else -> resolved.content
-        },
+        color =
+            when {
+                focused -> resolved.focusedContainer
+                active -> resolved.activeContainer
+                else -> resolved.container
+            },
+        contentColor =
+            when {
+                !enabled -> resolved.content.copy(alpha = 0.38f)
+                focused -> resolved.focusedContent
+                active -> resolved.activeContent
+                else -> resolved.content
+            },
     ) {
         Box(
             modifier = Modifier.size(56.dp),

@@ -10,11 +10,18 @@ interface DiscordPresenceTransport {
     val lastError: StateFlow<String?>
 
     fun attachActivity(activity: Activity?)
+
     suspend fun link(): DiscordLinkResult
+
     suspend fun connect(tokens: DiscordAuthTokens): DiscordLinkResult
+
     suspend fun update(payload: DiscordPresencePayload): Boolean
+
     suspend fun clear(): Boolean
+
     suspend fun disconnect(): Boolean
+
     suspend fun unlink(): Boolean
+
     fun close()
 }

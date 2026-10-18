@@ -8,24 +8,34 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SyncIdempotencyTest {
-
-    private fun item(id: String, pos: Long) = CanonicalPlaylistItem(
-        videoId = id, position = pos, addedAtMs = 1, title = id, hlc = "100:0:remote",
+    private fun item(
+        id: String,
+        pos: Long,
+    ) = CanonicalPlaylistItem(
+        videoId = id,
+        position = pos,
+        addedAtMs = 1,
+        title = id,
+        hlc = "100:0:remote",
     )
 
-    private val remote = listOf(
-        CanonicalPlaylist(
-            syncId = "p1", title = "Gym", updatedHlc = "100:0:remote",
-            items = listOf(item("v1", 0), item("v2", 1), item("v3", 2)),
-        ),
-        CanonicalPlaylist(syncId = "p2", title = "Chill", updatedHlc = "100:0:remote", items = listOf(item("v9", 0))),
-    )
+    private val remote =
+        listOf(
+            CanonicalPlaylist(
+                syncId = "p1",
+                title = "Gym",
+                updatedHlc = "100:0:remote",
+                items = listOf(item("v1", 0), item("v2", 1), item("v3", 2)),
+            ),
+            CanonicalPlaylist(syncId = "p2", title = "Chill", updatedHlc = "100:0:remote", items = listOf(item("v9", 0))),
+        )
 
     @Test
     fun crdt_merge_is_stable_under_repeated_application() {
-        var local = listOf(
-            CanonicalPlaylist(syncId = "p1", title = "Gym (local)", updatedHlc = "90:0:local", items = listOf(item("v1", 0))),
-        )
+        var local =
+            listOf(
+                CanonicalPlaylist(syncId = "p1", title = "Gym (local)", updatedHlc = "90:0:local", items = listOf(item("v1", 0))),
+            )
         val once = PlaylistMerger.merge(local, remote)
         var acc = once
         repeat(3) { acc = PlaylistMerger.merge(acc, remote) }

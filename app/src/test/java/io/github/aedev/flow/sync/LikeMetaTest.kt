@@ -14,17 +14,17 @@ import org.junit.Test
  * reads either shape (meta-first, flat fallback) so it interops with a peer that sends either.
  */
 class LikeMetaTest {
-
     @Test
     fun music_like_exports_meta_and_round_trips() {
-        val info = LikedVideoInfo(
-            videoId = "abc123",
-            title = "Bohemian Rhapsody",
-            thumbnail = "https://img/x.jpg",
-            channelName = "Queen",
-            likedAt = 1_700_000_000_000,
-            isMusic = true,
-        )
+        val info =
+            LikedVideoInfo(
+                videoId = "abc123",
+                title = "Bohemian Rhapsody",
+                thumbnail = "https://img/x.jpg",
+                channelName = "Queen",
+                likedAt = 1_700_000_000_000,
+                isMusic = true,
+            )
 
         val canonical = LikesMapper.likedToCanonical(info, node = "node")
         assertEquals("Queen", canonical.meta.artist)
@@ -42,10 +42,13 @@ class LikeMetaTest {
 
     @Test
     fun reads_meta_when_present() {
-        val c = CanonicalLike(
-            kind = CanonicalLike.KIND_MUSIC, id = "v", state = CanonicalLike.STATE_LIKED,
-            meta = CanonicalLikeMeta(title = "T", artist = "A", thumbnailUrl = "U"),
-        )
+        val c =
+            CanonicalLike(
+                kind = CanonicalLike.KIND_MUSIC,
+                id = "v",
+                state = CanonicalLike.STATE_LIKED,
+                meta = CanonicalLikeMeta(title = "T", artist = "A", thumbnailUrl = "U"),
+            )
         val info = LikesMapper.toLikedInfo(c)
         assertEquals("A", info.channelName)
         assertEquals("T", info.title)
@@ -55,10 +58,15 @@ class LikeMetaTest {
     @Test
     fun falls_back_to_flat_fields_when_meta_absent() {
         // A peer that sent only the flat mirror (no meta) must still resolve.
-        val c = CanonicalLike(
-            kind = CanonicalLike.KIND_VIDEO, id = "v", state = CanonicalLike.STATE_LIKED,
-            title = "FlatTitle", channelName = "FlatChannel", thumbnailUrl = "FlatThumb",
-        )
+        val c =
+            CanonicalLike(
+                kind = CanonicalLike.KIND_VIDEO,
+                id = "v",
+                state = CanonicalLike.STATE_LIKED,
+                title = "FlatTitle",
+                channelName = "FlatChannel",
+                thumbnailUrl = "FlatThumb",
+            )
         val info = LikesMapper.toLikedInfo(c)
         assertEquals("FlatChannel", info.channelName)
         assertEquals("FlatTitle", info.title)

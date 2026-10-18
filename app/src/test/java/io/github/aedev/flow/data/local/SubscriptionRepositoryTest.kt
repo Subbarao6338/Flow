@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 
 class SubscriptionRepositoryTest {
-
     private lateinit var repository: SubscriptionRepository
 
     @Before
@@ -23,14 +22,15 @@ class SubscriptionRepositoryTest {
 
     @Test
     fun `serialize and deserialize channel subscription correctly`() {
-        val subscription = ChannelSubscription(
-            channelId = "UC123",
-            channelName = "Test Channel",
-            channelThumbnail = "thumb_url",
-            subscribedAt = 123456789L,
-            lastVideoId = "vid99",
-            lastCheckTime = 987654321L
-        )
+        val subscription =
+            ChannelSubscription(
+                channelId = "UC123",
+                channelName = "Test Channel",
+                channelThumbnail = "thumb_url",
+                subscribedAt = 123456789L,
+                lastVideoId = "vid99",
+                lastCheckTime = 987654321L,
+            )
 
         // Access private methods via reflection
         val serializeMethod = SubscriptionRepository::class.java.getDeclaredMethod("serializeChannel", ChannelSubscription::class.java)
@@ -56,9 +56,9 @@ class SubscriptionRepositoryTest {
     fun `deserializeChannel handles corrupted data gracefully`() {
         val deserializeMethod = SubscriptionRepository::class.java.getDeclaredMethod("deserializeChannel", String::class.java)
         deserializeMethod.isAccessible = true
-        
+
         val result = deserializeMethod.invoke(repository, "corrupted|data|only") as ChannelSubscription?
-        
+
         assertThat(result).isNull()
     }
 }

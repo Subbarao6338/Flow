@@ -10,16 +10,18 @@ import org.junit.Test
 class SabrContextPolicyTest {
     @Test
     fun `packed context policy activates stops and discards types`() {
-        val encoded = ProtobufWriter.encode {
-            writeBytes(1, byteArrayOf(2, 3))
-            writeInt32(2, 2)
-            writeBytes(3, byteArrayOf(4))
-        }
-        val state = SabrSessionState().apply {
-            updateFromContextUpdate(SabrContextUpdate(type = 2, value = byteArrayOf(2)))
-            updateFromContextUpdate(SabrContextUpdate(type = 3, value = byteArrayOf(3)))
-            updateFromContextUpdate(SabrContextUpdate(type = 4, value = byteArrayOf(4)))
-        }
+        val encoded =
+            ProtobufWriter.encode {
+                writeBytes(1, byteArrayOf(2, 3))
+                writeInt32(2, 2)
+                writeBytes(3, byteArrayOf(4))
+            }
+        val state =
+            SabrSessionState().apply {
+                updateFromContextUpdate(SabrContextUpdate(type = 2, value = byteArrayOf(2)))
+                updateFromContextUpdate(SabrContextUpdate(type = 3, value = byteArrayOf(3)))
+                updateFromContextUpdate(SabrContextUpdate(type = 4, value = byteArrayOf(4)))
+            }
 
         state.updateFromContextSendingPolicy(SabrContextSendingPolicy.decode(encoded))
 

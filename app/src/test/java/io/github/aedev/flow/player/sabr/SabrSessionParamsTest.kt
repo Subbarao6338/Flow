@@ -1,8 +1,8 @@
 package io.github.aedev.flow.player.sabr
 
 import com.google.common.truth.Truth.assertThat
-import io.github.aedev.flow.player.sabr.core.SabrStreamController
 import io.github.aedev.flow.player.sabr.core.SabrCpn
+import io.github.aedev.flow.player.sabr.core.SabrStreamController
 import org.junit.Test
 
 /**
@@ -11,7 +11,6 @@ import org.junit.Test
  * response already baked into the streaming URL.
  */
 class SabrSessionParamsTest {
-
     @Test
     fun `generated cpn uses youtube session format`() {
         val cpn = SabrCpn.generate()
@@ -22,9 +21,12 @@ class SabrSessionParamsTest {
 
     @Test
     fun `appends alr cpn and rn to a bare gvs url`() {
-        val url = SabrStreamController.buildRequestUrl(
-            "https://r1.googlevideo.com/videoplayback?sabr=1", "CPN1234567890ab", 3
-        )
+        val url =
+            SabrStreamController.buildRequestUrl(
+                "https://r1.googlevideo.com/videoplayback?sabr=1",
+                "CPN1234567890ab",
+                3,
+            )
         assertThat(url).contains("alr=yes")
         assertThat(url).contains("cpn=CPN1234567890ab")
         assertThat(url).contains("rn=3")
@@ -51,9 +53,12 @@ class SabrSessionParamsTest {
 
     @Test
     fun `replaces stale rn and preserves fragment`() {
-        val url = SabrStreamController.buildRequestUrl(
-            "https://x/vp?sabr=1&rn=2#player", "CPN", 9
-        )
+        val url =
+            SabrStreamController.buildRequestUrl(
+                "https://x/vp?sabr=1&rn=2#player",
+                "CPN",
+                9,
+            )
 
         assertThat(url).contains("rn=9")
         assertThat(url).doesNotContain("rn=2")

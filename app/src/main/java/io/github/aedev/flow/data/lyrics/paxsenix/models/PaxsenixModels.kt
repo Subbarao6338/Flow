@@ -1,6 +1,6 @@
-//==================================================================================================
-//This implementation was based on metrolist's (https://github.com/MetrolistGroup/Metrolist)
-//==================================================================================================
+// ==================================================================================================
+// This implementation was based on metrolist's (https://github.com/MetrolistGroup/Metrolist)
+// ==================================================================================================
 
 package io.github.aedev.flow.data.lyrics.paxsenix.models
 
@@ -13,7 +13,7 @@ data class SearchResult(
     val artistName: String? = null,
     val albumName: String? = null,
     val duration: Int? = null,
-    val artwork: String? = null
+    val artwork: String? = null,
 ) {
     val displayName: String get() = trackName ?: songName ?: ""
     val displayArtist: String get() = artistName ?: ""
@@ -27,7 +27,7 @@ data class LyricsContent(
     val text: List<LyricText> = emptyList(),
     val background: Boolean = false,
     val backgroundText: List<LyricText> = emptyList(),
-    val oppositeTurn: Boolean = false
+    val oppositeTurn: Boolean = false,
 )
 
 data class LyricText(
@@ -35,7 +35,7 @@ data class LyricText(
     val timestamp: Long = 0,
     val endtime: Long = 0,
     val duration: Long = 0,
-    val part: Boolean = false
+    val part: Boolean = false,
 )
 
 data class LyricsResponse(
@@ -44,33 +44,33 @@ data class LyricsResponse(
     val elrc: String? = null,
     val elrcMultiPerson: String? = null,
     val ttmlContent: String? = null,
-    val plain: String? = null
+    val plain: String? = null,
 )
 
 data class AppleMusicSearchResponse(
     val results: AppleMusicResults = AppleMusicResults(),
-    val resources: AppleMusicResources? = null
+    val resources: AppleMusicResources? = null,
 )
 
 data class AppleMusicResults(
-    val songs: AppleMusicSongsResult? = null
+    val songs: AppleMusicSongsResult? = null,
 )
 
 data class AppleMusicSongsResult(
-    val data: List<AppleMusicSongData> = emptyList()
+    val data: List<AppleMusicSongData> = emptyList(),
 )
 
 data class AppleMusicSongData(
     val id: String = "",
-    val type: String = ""
+    val type: String = "",
 )
 
 data class AppleMusicResources(
-    val songs: Map<String, AppleMusicSongDetail>? = null
+    val songs: Map<String, AppleMusicSongDetail>? = null,
 )
 
 data class AppleMusicSongDetail(
-    val attributes: AppleMusicSongAttributes = AppleMusicSongAttributes()
+    val attributes: AppleMusicSongAttributes = AppleMusicSongAttributes(),
 )
 
 data class AppleMusicSongAttributes(
@@ -79,9 +79,9 @@ data class AppleMusicSongAttributes(
     val albumName: String? = null,
     val artwork: AppleMusicArtwork? = null,
     val url: String? = null,
-    val durationInMillis: Long? = null
+    val durationInMillis: Long? = null,
 )
 
 data class AppleMusicArtwork(
-    val url: String = ""
+    val url: String = "",
 )

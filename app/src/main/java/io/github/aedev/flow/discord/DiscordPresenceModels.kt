@@ -11,5 +11,8 @@ enum class DiscordConnectionState {
 
 sealed interface DiscordLinkResult {
     data object Success : DiscordLinkResult
-    data class Failure(val message: String) : DiscordLinkResult
+
+    data class Failure(
+        val message: String,
+    ) : DiscordLinkResult
 }

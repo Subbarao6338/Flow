@@ -32,16 +32,17 @@ class DiscordPresencePolicy(
             }
         }
 
-        val meaningfulSeek = maxOf(
-            timestampDriftMs(
-                previous.payload.startTimestampSeconds,
-                candidate.startTimestampSeconds,
-            ),
-            timestampDriftMs(
-                previous.payload.endTimestampSeconds,
-                candidate.endTimestampSeconds,
-            ),
-        ) >= seekDriftThresholdMs
+        val meaningfulSeek =
+            maxOf(
+                timestampDriftMs(
+                    previous.payload.startTimestampSeconds,
+                    candidate.startTimestampSeconds,
+                ),
+                timestampDriftMs(
+                    previous.payload.endTimestampSeconds,
+                    candidate.endTimestampSeconds,
+                ),
+            ) >= seekDriftThresholdMs
 
         return if (meaningfulSeek && intervalElapsed) {
             DiscordPresenceDecision.Send(candidate)
@@ -50,14 +51,19 @@ class DiscordPresencePolicy(
         }
     }
 
-    private fun DiscordPresencePayload.withoutTimestamps(): DiscordPresencePayload = copy(
-        startTimestampSeconds = null,
-        endTimestampSeconds = null,
-    )
+    private fun DiscordPresencePayload.withoutTimestamps(): DiscordPresencePayload =
+        copy(
+            startTimestampSeconds = null,
+            endTimestampSeconds = null,
+        )
 
-    private fun timestampDriftMs(left: Long?, right: Long?): Long = when {
-        left == null && right == null -> 0L
-        left == null || right == null -> Long.MAX_VALUE
-        else -> abs(left - right) * 1_000L
-    }
+    private fun timestampDriftMs(
+        left: Long?,
+        right: Long?,
+    ): Long =
+        when {
+            left == null && right == null -> 0L
+            left == null || right == null -> Long.MAX_VALUE
+            else -> abs(left - right) * 1_000L
+        }
 }
