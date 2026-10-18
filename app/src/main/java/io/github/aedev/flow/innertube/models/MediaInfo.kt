@@ -21,5 +21,6 @@ data class MediaInfo(
     val height: Int? = null,
     val contentLength: String? = null,
     val qualityLabel: String? = null,
-    val videoId_tag: Int? = null // itag
+    // itag
+    val videoId_tag: Int? = null,
 )

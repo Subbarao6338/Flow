@@ -7,3 +7,5 @@ package io.github.aedev.flow.player
  *
  * See [io.github.aedev.flow.player.dlna.DlnaCastManager] for the new casting engine.
  */
+@Suppress("unused")
+internal object FlowCastOptionsProviderStub

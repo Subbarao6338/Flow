@@ -84,15 +84,6 @@ android {
         includeInBundle = false
     }
 
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("arm64-v8a")
-            isUniversalApk = false
-        }
-    }
-
     flavorDimensions += "version"
     productFlavors {
         create("github") {
