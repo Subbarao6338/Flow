@@ -66,9 +66,15 @@ jobs:
           cd dist
           sha256sum *.apk > checksums.txt
 
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apks
+          path: dist/
+
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: Flow ${{ github.ref_name }}
