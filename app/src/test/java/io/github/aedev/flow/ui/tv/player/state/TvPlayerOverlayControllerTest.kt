@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class TvPlayerOverlayControllerTest {
-
     private var now = 0L
     private val controller = TvPlayerOverlayController { now }
 
@@ -78,10 +77,10 @@ class TvPlayerOverlayControllerTest {
         controller.showTransport()
         controller.openPanel(TvPlayerPanel.DESCRIPTION)
 
-        assertThat(controller.onBack()).isTrue()   // panel -> transport
-        assertThat(controller.onBack()).isTrue()   // transport -> hidden
+        assertThat(controller.onBack()).isTrue() // panel -> transport
+        assertThat(controller.onBack()).isTrue() // transport -> hidden
         assertThat(controller.state.value.mode).isEqualTo(TvOverlayMode.HIDDEN)
-        assertThat(controller.onBack()).isFalse()  // hidden -> close the player
+        assertThat(controller.onBack()).isFalse() // hidden -> close the player
     }
 
     @Test

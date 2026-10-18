@@ -7,7 +7,7 @@ data class DecodedAudio(
     val data: ByteArray,
     val channelCount: Int,
     val sampleRate: Int,
-    val pcmEncoding: Int
+    val pcmEncoding: Int,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

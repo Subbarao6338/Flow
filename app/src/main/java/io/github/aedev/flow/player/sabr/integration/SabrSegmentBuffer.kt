@@ -24,28 +24,34 @@ class SabrSegmentBuffer {
         queue.put(ByteArray(0))
     }
 
-    fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+    fun read(
+        buffer: ByteArray,
+        offset: Int,
+        length: Int,
+    ): Int {
         if (closed.get()) return -1
         if (length == 0) return 0
 
         var totalRead = 0
         while (totalRead < length) {
             if (currentChunk == null || currentOffset >= currentChunk!!.size) {
-                val next = if (totalRead > 0) {
-                    queue.poll()
-                } else {
-                    var polled: ByteArray? = null
-                    while (polled == null && !closed.get()) {
-                        if (endOfStream.get() && queue.isEmpty()) break
-                        polled = try {
-                            queue.poll(250, TimeUnit.MILLISECONDS)
-                        } catch (error: InterruptedException) {
-                            Thread.currentThread().interrupt()
-                            throw IOException("Interrupted while waiting for SABR media", error)
+                val next =
+                    if (totalRead > 0) {
+                        queue.poll()
+                    } else {
+                        var polled: ByteArray? = null
+                        while (polled == null && !closed.get()) {
+                            if (endOfStream.get() && queue.isEmpty()) break
+                            polled =
+                                try {
+                                    queue.poll(250, TimeUnit.MILLISECONDS)
+                                } catch (error: InterruptedException) {
+                                    Thread.currentThread().interrupt()
+                                    throw IOException("Interrupted while waiting for SABR media", error)
+                                }
                         }
+                        polled
                     }
-                    polled
-                }
 
                 if (next == null) {
                     if (closed.get() || (endOfStream.get() && queue.isEmpty())) {

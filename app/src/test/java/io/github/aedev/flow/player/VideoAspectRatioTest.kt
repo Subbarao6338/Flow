@@ -16,12 +16,13 @@ class VideoAspectRatioTest {
 
     @Test
     fun `highest resolution determines source ratio when low rendition is rounded`() {
-        val dimensions = listOf(
-            256 to 128,
-            426 to 182,
-            1920 to 818,
-            3840 to 1636,
-        )
+        val dimensions =
+            listOf(
+                256 to 128,
+                426 to 182,
+                1920 to 818,
+                3840 to 1636,
+            )
 
         assertThat(sourceVideoAspectRatio(dimensions))
             .isWithin(0.0001f)

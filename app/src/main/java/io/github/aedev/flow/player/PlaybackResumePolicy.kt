@@ -4,7 +4,7 @@ object PlaybackResumePolicy {
     fun resolveStartPosition(
         savedPosition: Long,
         durationMs: Long,
-        resumeAllowed: Boolean
+        resumeAllowed: Boolean,
     ): Long {
         if (!resumeAllowed || savedPosition <= 500L) return 0L
         return savedPosition.takeUnless {
@@ -12,7 +12,10 @@ object PlaybackResumePolicy {
         } ?: 0L
     }
 
-    fun shouldRestartCompletedPlayback(savedPosition: Long, durationMs: Long): Boolean {
+    fun shouldRestartCompletedPlayback(
+        savedPosition: Long,
+        durationMs: Long,
+    ): Boolean {
         if (savedPosition <= 0L) return false
         if (durationMs > 0L) {
             val remainingMs = durationMs - savedPosition

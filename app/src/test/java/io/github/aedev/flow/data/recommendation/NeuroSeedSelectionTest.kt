@@ -11,8 +11,11 @@ import org.junit.Test
 
 /** R-2: cluster-diversified seed selection for related-graph retrieval. */
 class NeuroSeedSelectionTest {
-
-    private fun seed(id: String, cluster: String, weight: Double) = SeedRank(id, cluster, weight)
+    private fun seed(
+        id: String,
+        cluster: String,
+        weight: Double,
+    ) = SeedRank(id, cluster, weight)
 
     @Test
     fun `respects the maxSeeds cap`() {
@@ -31,13 +34,15 @@ class NeuroSeedSelectionTest {
     fun `prefers higher-weight seeds`() {
         val seeds = listOf(seed("low", "a", 0.1), seed("high", "a", 0.9), seed("mid", "b", 0.5))
         assertThat(NeuroScoring.pickDiverseSeeds(seeds, maxSeeds = 2, maxPerCluster = 2))
-            .containsExactly("high", "mid").inOrder()
+            .containsExactly("high", "mid")
+            .inOrder()
     }
 
     @Test
     fun `a binge in one cluster does not crowd out other interests`() {
-        val seeds = (1..5).map { seed("binge$it", "gaming", 0.9 - it * 0.01) } +
-            seed("other", "cooking", 0.5)
+        val seeds =
+            (1..5).map { seed("binge$it", "gaming", 0.9 - it * 0.01) } +
+                seed("other", "cooking", 0.5)
         val picked = NeuroScoring.pickDiverseSeeds(seeds, maxSeeds = 4, maxPerCluster = 2)
         assertThat(picked).contains("other")
         assertThat(picked.count { it.startsWith("binge") }).isAtMost(2)

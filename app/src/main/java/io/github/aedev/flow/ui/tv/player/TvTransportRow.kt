@@ -49,9 +49,10 @@ fun TvTransportRow(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .tvRowFocus(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .tvRowFocus(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -67,11 +68,12 @@ fun TvTransportRow(
             )
             TvIconButton(
                 icon = if (isPlaying) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
-                contentDescription = if (isPlaying) {
-                    stringResource(R.string.pause)
-                } else {
-                    stringResource(R.string.play)
-                },
+                contentDescription =
+                    if (isPlaying) {
+                        stringResource(R.string.pause)
+                    } else {
+                        stringResource(R.string.play)
+                    },
                 onClick = onTogglePlayback,
                 focusRequester = playPauseFocusRequester,
             )

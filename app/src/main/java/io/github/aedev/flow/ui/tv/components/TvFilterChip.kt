@@ -28,16 +28,18 @@ fun TvFilterChip(
         onClick = onClick,
         modifier = modifier.onFocusChanged { focused = it.isFocused },
         shape = CircleShape,
-        color = when {
-            focused -> MaterialTheme.colorScheme.inverseSurface
-            selected -> MaterialTheme.colorScheme.secondaryContainer
-            else -> MaterialTheme.colorScheme.surfaceContainerHigh
-        },
-        contentColor = when {
-            focused -> MaterialTheme.colorScheme.inverseOnSurface
-            selected -> MaterialTheme.colorScheme.onSecondaryContainer
-            else -> MaterialTheme.colorScheme.onSurfaceVariant
-        },
+        color =
+            when {
+                focused -> MaterialTheme.colorScheme.inverseSurface
+                selected -> MaterialTheme.colorScheme.secondaryContainer
+                else -> MaterialTheme.colorScheme.surfaceContainerHigh
+            },
+        contentColor =
+            when {
+                focused -> MaterialTheme.colorScheme.inverseOnSurface
+                selected -> MaterialTheme.colorScheme.onSecondaryContainer
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
+            },
     ) {
         Text(
             text = label,

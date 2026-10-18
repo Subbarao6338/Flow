@@ -19,13 +19,15 @@ class DiscordPreferences(
 ) {
     constructor(context: Context) : this(context.applicationContext.discordDataStore)
 
-    val enabled: Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences[ENABLED] ?: false
-    }
+    val enabled: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[ENABLED] ?: false
+        }
 
-    val linkedAccountLabel: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[LINKED_ACCOUNT_LABEL]?.takeIf(String::isNotBlank)
-    }
+    val linkedAccountLabel: Flow<String?> =
+        dataStore.data.map { preferences ->
+            preferences[LINKED_ACCOUNT_LABEL]?.takeIf(String::isNotBlank)
+        }
 
     suspend fun setEnabled(enabled: Boolean) {
         dataStore.edit { preferences -> preferences[ENABLED] = enabled }

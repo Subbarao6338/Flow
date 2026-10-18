@@ -4,7 +4,7 @@ object BackgroundPlaybackPolicy {
     fun shouldEnterAutoPip(
         autoPipEnabled: Boolean,
         isVideoPlaying: Boolean,
-        explicitBackgroundPlaybackActive: Boolean
+        explicitBackgroundPlaybackActive: Boolean,
     ): Boolean =
         autoPipEnabled &&
             isVideoPlaying &&
@@ -13,7 +13,7 @@ object BackgroundPlaybackPolicy {
     fun shouldKeepPlaybackInBackground(
         backgroundPlaybackPreferenceEnabled: Boolean,
         explicitBackgroundPlaybackActive: Boolean,
-        hasActiveVideo: Boolean
+        hasActiveVideo: Boolean,
     ): Boolean =
         hasActiveVideo &&
             (backgroundPlaybackPreferenceEnabled || explicitBackgroundPlaybackActive)
@@ -23,7 +23,7 @@ object BackgroundPlaybackPolicy {
         currentVideoId: String?,
         isBackgroundPlaybackMode: Boolean,
         isMiniPlayerCollapsed: Boolean,
-        hasReusablePlayback: Boolean
+        hasReusablePlayback: Boolean,
     ): Boolean =
         (isBackgroundPlaybackMode || isMiniPlayerCollapsed) &&
             hasReusablePlayback &&

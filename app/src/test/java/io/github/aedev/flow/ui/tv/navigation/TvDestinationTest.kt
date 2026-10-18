@@ -6,14 +6,15 @@ import org.junit.Test
 class TvDestinationTest {
     @Test
     fun `primary destinations keep a stable order`() {
-        assertThat(TvDestination.primary).containsExactly(
-            TvDestination.HOME,
-            TvDestination.MUSIC,
-            TvDestination.SUBSCRIPTIONS,
-            TvDestination.SEARCH,
-            TvDestination.LIBRARY,
-            TvDestination.SETTINGS,
-        ).inOrder()
+        assertThat(TvDestination.primary)
+            .containsExactly(
+                TvDestination.HOME,
+                TvDestination.MUSIC,
+                TvDestination.SUBSCRIPTIONS,
+                TvDestination.SEARCH,
+                TvDestination.LIBRARY,
+                TvDestination.SETTINGS,
+            ).inOrder()
     }
 
     @Test

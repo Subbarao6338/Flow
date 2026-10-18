@@ -29,11 +29,12 @@ object TvBackModel {
         hasTabHistory: Boolean,
         currentTab: TvDestination,
         railHasFocus: Boolean,
-    ): TvBackAction = when {
-        isOnDetailRoute -> TvBackAction.POP_DETAIL
-        hasTabHistory -> TvBackAction.POP_TAB
-        currentTab != TvDestination.HOME -> TvBackAction.GO_HOME
-        railHasFocus -> TvBackAction.EXIT
-        else -> TvBackAction.FOCUS_RAIL
-    }
+    ): TvBackAction =
+        when {
+            isOnDetailRoute -> TvBackAction.POP_DETAIL
+            hasTabHistory -> TvBackAction.POP_TAB
+            currentTab != TvDestination.HOME -> TvBackAction.GO_HOME
+            railHasFocus -> TvBackAction.EXIT
+            else -> TvBackAction.FOCUS_RAIL
+        }
 }

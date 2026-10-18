@@ -5,7 +5,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class TvPlayerKeyMapperTest {
-
     @Test
     fun `media keys map to playback actions`() {
         assertThat(TvPlayerKeyMapper.map(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE))

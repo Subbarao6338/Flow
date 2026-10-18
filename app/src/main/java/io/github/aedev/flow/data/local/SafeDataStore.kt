@@ -14,8 +14,9 @@ private const val SAFE_DATA_STORE_TAG = "SafeDataStore"
 fun safePreferencesDataStore(name: String): ReadOnlyProperty<Context, DataStore<Preferences>> =
     preferencesDataStore(
         name = name,
-        corruptionHandler = ReplaceFileCorruptionHandler { corruption ->
-            Log.w(SAFE_DATA_STORE_TAG, "Resetting corrupted preferences DataStore: $name", corruption)
-            emptyPreferences()
-        }
+        corruptionHandler =
+            ReplaceFileCorruptionHandler { corruption ->
+                Log.w(SAFE_DATA_STORE_TAG, "Resetting corrupted preferences DataStore: $name", corruption)
+                emptyPreferences()
+            },
     )

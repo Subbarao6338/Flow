@@ -3,8 +3,6 @@ package io.github.aedev.flow.discord
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import java.io.File
-import java.security.KeyStore
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -13,6 +11,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.security.KeyStore
 
 @RunWith(AndroidJUnit4::class)
 class DiscordTokenStoreInstrumentedTest {
@@ -31,11 +31,12 @@ class DiscordTokenStoreInstrumentedTest {
 
     @Test
     fun tokenRoundTripsThroughKeystoreEncryptedStorage() {
-        val tokens = DiscordAuthTokens(
-            accessToken = "account-token",
-            refreshToken = "",
-            expiresAtEpochSeconds = Long.MAX_VALUE,
-        )
+        val tokens =
+            DiscordAuthTokens(
+                accessToken = "account-token",
+                refreshToken = "",
+                expiresAtEpochSeconds = Long.MAX_VALUE,
+            )
 
         store.save(tokens)
 
@@ -56,7 +57,8 @@ class DiscordTokenStoreInstrumentedTest {
         assertFalse(androidKeyStore().containsAlias("flow_discord_tokens_v1"))
     }
 
-    private fun androidKeyStore(): KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-        load(null)
-    }
+    private fun androidKeyStore(): KeyStore =
+        KeyStore.getInstance("AndroidKeyStore").apply {
+            load(null)
+        }
 }

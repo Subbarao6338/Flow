@@ -16,8 +16,6 @@ class SimpMusicLyricsProvider : LyricsProvider {
         title: String,
         artist: String,
         duration: Int,
-        album: String?
-    ): Result<List<LyricsEntry>> {
-        return SimpMusicLyrics.getLyrics(id, duration)
-    }
+        album: String?,
+    ): Result<List<LyricsEntry>> = SimpMusicLyrics.getLyrics(id, duration)
 }

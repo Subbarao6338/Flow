@@ -35,16 +35,18 @@ fun TvButton(
         onClick = onClick,
         modifier = modifier.tvFocusScale(focusState),
         shape = CircleShape,
-        color = if (focused) {
-            MaterialTheme.colorScheme.inverseSurface
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHigh
-        },
-        contentColor = if (focused) {
-            MaterialTheme.colorScheme.inverseOnSurface
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        },
+        color =
+            if (focused) {
+                MaterialTheme.colorScheme.inverseSurface
+            } else {
+                MaterialTheme.colorScheme.surfaceContainerHigh
+            },
+        contentColor =
+            if (focused) {
+                MaterialTheme.colorScheme.inverseOnSurface
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),

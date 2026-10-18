@@ -18,14 +18,25 @@ data class RecognitionResult(
     val appleMusicUrl: String? = null,
     val spotifyUrl: String? = null,
     val isrc: String? = null,
-    val youtubeVideoId: String? = null
+    val youtubeVideoId: String? = null,
 )
 
 sealed interface RecognitionStatus {
     data object Ready : RecognitionStatus
+
     data object Listening : RecognitionStatus
+
     data object Processing : RecognitionStatus
-    data class Success(val result: RecognitionResult) : RecognitionStatus
-    data class NoMatch(val message: String) : RecognitionStatus
-    data class Error(val message: String) : RecognitionStatus
+
+    data class Success(
+        val result: RecognitionResult,
+    ) : RecognitionStatus
+
+    data class NoMatch(
+        val message: String,
+    ) : RecognitionStatus
+
+    data class Error(
+        val message: String,
+    ) : RecognitionStatus
 }

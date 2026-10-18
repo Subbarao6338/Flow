@@ -9,7 +9,7 @@ internal fun shouldPrewarmRelatedPlayback(
     durationMs: Long,
     isShort: Boolean,
     isLocal: Boolean,
-    alreadyPrewarmed: Boolean
+    alreadyPrewarmed: Boolean,
 ): Boolean {
     if (videoId.isBlank() || isShort || isLocal || alreadyPrewarmed) return false
     if (positionMs >= RELATED_PREWARM_MIN_POSITION_MS) return true

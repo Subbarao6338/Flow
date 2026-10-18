@@ -11,15 +11,15 @@ import java.io.ByteArrayOutputStream
  * - hex is lowercase; used by the shared golden vectors.
  */
 object SyncBytes {
-
     private const val B64URL_ALPHABET =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
-    private val B64URL_DECODE: IntArray = IntArray(128) { -1 }.also { table ->
-        for (i in B64URL_ALPHABET.indices) table[B64URL_ALPHABET[i].code] = i
-        table['+'.code] = 62
-        table['/'.code] = 63
-    }
+    private val B64URL_DECODE: IntArray =
+        IntArray(128) { -1 }.also { table ->
+            for (i in B64URL_ALPHABET.indices) table[B64URL_ALPHABET[i].code] = i
+            table['+'.code] = 62
+            table['/'.code] = 63
+        }
 
     private val HEX_DIGITS = "0123456789abcdef".toCharArray()
 
@@ -29,9 +29,10 @@ object SyncBytes {
         val sb = StringBuilder((data.size + 2) / 3 * 4)
         var i = 0
         while (i + 3 <= data.size) {
-            val n = ((data[i].toInt() and 0xFF) shl 16) or
-                ((data[i + 1].toInt() and 0xFF) shl 8) or
-                (data[i + 2].toInt() and 0xFF)
+            val n =
+                ((data[i].toInt() and 0xFF) shl 16) or
+                    ((data[i + 1].toInt() and 0xFF) shl 8) or
+                    (data[i + 2].toInt() and 0xFF)
             sb.append(B64URL_ALPHABET[(n ushr 18) and 0x3F])
             sb.append(B64URL_ALPHABET[(n ushr 12) and 0x3F])
             sb.append(B64URL_ALPHABET[(n ushr 6) and 0x3F])
@@ -44,6 +45,7 @@ object SyncBytes {
                 sb.append(B64URL_ALPHABET[(n ushr 18) and 0x3F])
                 sb.append(B64URL_ALPHABET[(n ushr 12) and 0x3F])
             }
+
             2 -> {
                 val n = ((data[i].toInt() and 0xFF) shl 16) or ((data[i + 1].toInt() and 0xFF) shl 8)
                 sb.append(B64URL_ALPHABET[(n ushr 18) and 0x3F])

@@ -9,7 +9,6 @@ import org.junit.Test
 import kotlin.random.Random
 
 class SyncCodecFuzzTest {
-
     private val master = SyncCrypto.randomMasterKey()
     private val sid = SyncCrypto.randomSessionId()
     private val keys = SyncCrypto.deriveKeys(master, sid)

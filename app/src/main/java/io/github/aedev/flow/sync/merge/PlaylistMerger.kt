@@ -10,10 +10,12 @@ import io.github.aedev.flow.sync.canonical.CanonicalPlaylistItem
  * deterministic re-rank to 0..n-1 so manual reorders converge and `a ⊕ a == a`.
  */
 object PlaylistMerger {
-
     private val WHITESPACE = Regex("\\s+")
 
-    fun merge(local: List<CanonicalPlaylist>, remote: List<CanonicalPlaylist>): List<CanonicalPlaylist> {
+    fun merge(
+        local: List<CanonicalPlaylist>,
+        remote: List<CanonicalPlaylist>,
+    ): List<CanonicalPlaylist> {
         val reconciled = reconcileBySyncId(local, remote)
         val byId = LinkedHashMap<String, CanonicalPlaylist>(local.size + reconciled.size)
         for (p in local) byId[p.syncId] = normalize(p)
@@ -47,9 +49,16 @@ object PlaylistMerger {
             p.title.isNotBlank()
 
     private fun titleKey(p: CanonicalPlaylist): String =
-        (if (p.isMusic) "m:" else "v:") + p.title.trim().lowercase().replace(WHITESPACE, " ")
+        (if (p.isMusic) "m:" else "v:") +
+            p.title
+                .trim()
+                .lowercase()
+                .replace(WHITESPACE, " ")
 
-    fun mergeOne(x: CanonicalPlaylist, y: CanonicalPlaylist): CanonicalPlaylist {
+    fun mergeOne(
+        x: CanonicalPlaylist,
+        y: CanonicalPlaylist,
+    ): CanonicalPlaylist {
         val winner = Crdt.preferByHlc(x, x.updatedHlc, y, y.updatedHlc) { it.title }
         val loser = if (winner === x) y else x
         return winner.copy(
@@ -82,7 +91,10 @@ object PlaylistMerger {
             .mapIndexed { idx, item -> item.copy(position = idx.toLong()) }
     }
 
-    private fun mergeItem(x: CanonicalPlaylistItem, y: CanonicalPlaylistItem): CanonicalPlaylistItem {
+    private fun mergeItem(
+        x: CanonicalPlaylistItem,
+        y: CanonicalPlaylistItem,
+    ): CanonicalPlaylistItem {
         val posWinner = Crdt.preferByHlc(x, x.hlc, y, y.hlc) { it.position.toString() }
         val metaWinner = Crdt.preferByHlc(x, x.hlc, y, y.hlc) { it.title }
         val loser = if (metaWinner === x) y else x
@@ -104,15 +116,20 @@ object PlaylistMerger {
     /** Canonical form: items sorted + re-ranked so a single playlist is its own merge fixpoint. */
     private fun normalize(p: CanonicalPlaylist): CanonicalPlaylist {
         if (p.items.isEmpty()) return p
-        val ranked = p.items
-            .sortedWith(compareBy({ it.position }, { it.videoId }))
-            .mapIndexed { idx, item -> item.copy(position = idx.toLong()) }
+        val ranked =
+            p.items
+                .sortedWith(compareBy({ it.position }, { it.videoId }))
+                .mapIndexed { idx, item -> item.copy(position = idx.toLong()) }
         return p.copy(items = ranked)
     }
 
-    private fun earliest(a: Long, b: Long): Long = when {
-        a == 0L -> b
-        b == 0L -> a
-        else -> minOf(a, b)
-    }
+    private fun earliest(
+        a: Long,
+        b: Long,
+    ): Long =
+        when {
+            a == 0L -> b
+            b == 0L -> a
+            else -> minOf(a, b)
+        }
 }

@@ -7,12 +7,13 @@ class DiscordGatewayHealthTest {
     @Test
     fun `reconnect backoff grows caps and resets`() {
         var now = 1_000L
-        val backoff = DiscordReconnectBackoff(
-            nowElapsedMs = { now },
-            jitterMs = { 0L },
-            initialDelayMs = 100L,
-            maximumDelayMs = 400L,
-        )
+        val backoff =
+            DiscordReconnectBackoff(
+                nowElapsedMs = { now },
+                jitterMs = { 0L },
+                initialDelayMs = 100L,
+                maximumDelayMs = 400L,
+            )
 
         assertThat(backoff.canAttempt()).isTrue()
         backoff.recordFailure()

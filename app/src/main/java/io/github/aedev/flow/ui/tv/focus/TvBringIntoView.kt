@@ -22,8 +22,11 @@ private class TvPivotBringIntoViewSpec(
     override val scrollAnimationSpec: AnimationSpec<Float> =
         tween(durationMillis = 260, easing = FastOutSlowInEasing)
 
-    override fun calculateScrollDistance(offset: Float, size: Float, containerSize: Float): Float =
-        offset - containerSize * parentFraction
+    override fun calculateScrollDistance(
+        offset: Float,
+        size: Float,
+        containerSize: Float,
+    ): Float = offset - containerSize * parentFraction
 }
 
 /** Applies pivot scrolling to horizontal rows placed in [content]. */

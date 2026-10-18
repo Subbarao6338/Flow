@@ -20,26 +20,29 @@ class LyricsPlusProvider : LyricsProvider {
     override val name = "LyricsPlus"
 
     private val client: OkHttpClient
-        get() = AppProxyManager.applyTo(OkHttpClient.Builder())
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .build()
+        get() =
+            AppProxyManager
+                .applyTo(OkHttpClient.Builder())
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .build()
 
     private val gson = Gson()
 
-    private val baseUrls = listOf(
-        "https://lyricsplus.binimum.org",
-        "https://lyricsplus.atomix.one",
-        "https://lyricsplus.prjktla.my.id",
-        "https://lyricsplus-seven.vercel.app"
-    )
+    private val baseUrls =
+        listOf(
+            "https://lyricsplus.binimum.org",
+            "https://lyricsplus.atomix.one",
+            "https://lyricsplus.prjktla.my.id",
+            "https://lyricsplus-seven.vercel.app",
+        )
 
     @Volatile
     private var lastWorkingServer: String? = null
 
     private data class LyricsPlusResponse(
         val type: String? = null,
-        val lyrics: List<LyricLine>? = null
+        val lyrics: List<LyricLine>? = null,
     )
 
     private data class LyricLine(
@@ -47,27 +50,27 @@ class LyricsPlusProvider : LyricsProvider {
         val duration: Long = 0,
         val text: String = "",
         val syllabus: List<LyricWord>? = null,
-        val element: LineElement? = null
+        val element: LineElement? = null,
     )
 
     private data class LineElement(
-        val singer: String? = null
+        val singer: String? = null,
     )
 
     private data class LyricWord(
         val time: Long = 0,
         val duration: Long = 0,
         val text: String = "",
-        val isBackground: Boolean = false
+        val isBackground: Boolean = false,
     )
 
     private data class BinimumLyricsApiResponse(
-        val results: List<BinimumLyricsResult> = emptyList()
+        val results: List<BinimumLyricsResult> = emptyList(),
     )
 
     private data class BinimumLyricsResult(
         val timing_type: String? = null,
-        val lyricsUrl: String? = null
+        val lyricsUrl: String? = null,
     )
 
     override suspend fun getLyrics(
@@ -75,15 +78,16 @@ class LyricsPlusProvider : LyricsProvider {
         title: String,
         artist: String,
         duration: Int,
-        album: String?
-    ): Result<List<LyricsEntry>> = withContext(Dispatchers.IO) {
-        runCatching {
-            fetchBinimumLyrics(title, artist, duration, album)
-                ?.takeIf { entries -> entries.any { !it.words.isNullOrEmpty() } }
-                ?: fetchLyricsPlus(title, artist, duration, album)
-                ?: throw IllegalStateException("LyricsPlus lyrics unavailable")
+        album: String?,
+    ): Result<List<LyricsEntry>> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                fetchBinimumLyrics(title, artist, duration, album)
+                    ?.takeIf { entries -> entries.any { !it.words.isNullOrEmpty() } }
+                    ?: fetchLyricsPlus(title, artist, duration, album)
+                    ?: throw IllegalStateException("LyricsPlus lyrics unavailable")
+            }
         }
-    }
 
     private fun prioritizedServers(): List<String> {
         val last = lastWorkingServer
@@ -98,20 +102,21 @@ class LyricsPlusProvider : LyricsProvider {
         title: String,
         artist: String,
         duration: Int,
-        album: String?
+        album: String?,
     ): List<LyricsEntry>? {
         if (title.isBlank() || artist.isBlank()) return null
 
         for (baseUrl in prioritizedServers()) {
             try {
-                val url = buildString {
-                    append(baseUrl.trimEnd('/'))
-                    append("/v2/lyrics/get")
-                    append("?title=${title.urlEncoded()}")
-                    append("&artist=${artist.urlEncoded()}")
-                    if (duration > 0) append("&duration=$duration")
-                    if (!album.isNullOrBlank()) append("&album=${album.urlEncoded()}")
-                }
+                val url =
+                    buildString {
+                        append(baseUrl.trimEnd('/'))
+                        append("/v2/lyrics/get")
+                        append("?title=${title.urlEncoded()}")
+                        append("&artist=${artist.urlEncoded()}")
+                        if (duration > 0) append("&duration=$duration")
+                        if (!album.isNullOrBlank()) append("&album=${album.urlEncoded()}")
+                    }
                 val body = executeGet(url) ?: continue
                 val response = gson.fromJson(body, LyricsPlusResponse::class.java)
                 val entries = convertLyricsPlus(response)
@@ -131,18 +136,19 @@ class LyricsPlusProvider : LyricsProvider {
         title: String,
         artist: String,
         duration: Int,
-        album: String?
+        album: String?,
     ): List<LyricsEntry>? {
         if (title.isBlank() || artist.isBlank()) return null
 
         return try {
-            val url = buildString {
-                append(BINIMUM_API_BASE_URL)
-                append("?track=${title.urlEncoded()}")
-                append("&artist=${artist.urlEncoded()}")
-                if (duration > 0) append("&duration=$duration")
-                if (!album.isNullOrBlank()) append("&album=${album.urlEncoded()}")
-            }
+            val url =
+                buildString {
+                    append(BINIMUM_API_BASE_URL)
+                    append("?track=${title.urlEncoded()}")
+                    append("&artist=${artist.urlEncoded()}")
+                    if (duration > 0) append("&duration=$duration")
+                    if (!album.isNullOrBlank()) append("&album=${album.urlEncoded()}")
+                }
             val body = executeGet(url) ?: return null
             val response = gson.fromJson(body, BinimumLyricsApiResponse::class.java)
             val selected = response.results.firstOrNull { !it.lyricsUrl.isNullOrBlank() } ?: return null
@@ -164,32 +170,35 @@ class LyricsPlusProvider : LyricsProvider {
             val mainWords = allWords.filter { !it.isBackground }
             val bgWords = allWords.filter { it.isBackground }
 
-            val mainText = when {
-                isWordSync && mainWords.isNotEmpty() -> buildText(mainWords)
-                mainWords.isEmpty() && bgWords.isNotEmpty() -> ""
-                else -> line.text.trim()
-            }
+            val mainText =
+                when {
+                    isWordSync && mainWords.isNotEmpty() -> buildText(mainWords)
+                    mainWords.isEmpty() && bgWords.isNotEmpty() -> ""
+                    else -> line.text.trim()
+                }
 
             if (mainText.isNotBlank()) {
-                result += LyricsEntry(
-                    time = line.time,
-                    text = mainText,
-                    words = if (isWordSync) mainWords.toWordTimestamps() else null,
-                    agent = line.element?.singer,
-                    isBackground = false
-                )
+                result +=
+                    LyricsEntry(
+                        time = line.time,
+                        text = mainText,
+                        words = if (isWordSync) mainWords.toWordTimestamps() else null,
+                        agent = line.element?.singer,
+                        isBackground = false,
+                    )
             }
 
             if (bgWords.isNotEmpty()) {
                 val bgText = buildText(bgWords)
                 if (bgText.isNotBlank()) {
-                    result += LyricsEntry(
-                        time = bgWords.minOf { it.time },
-                        text = bgText,
-                        words = if (isWordSync) bgWords.toWordTimestamps() else null,
-                        agent = "bg",
-                        isBackground = true
-                    )
+                    result +=
+                        LyricsEntry(
+                            time = bgWords.minOf { it.time },
+                            text = bgText,
+                            words = if (isWordSync) bgWords.toWordTimestamps() else null,
+                            agent = "bg",
+                            isBackground = true,
+                        )
                 }
             }
         }
@@ -197,28 +206,26 @@ class LyricsPlusProvider : LyricsProvider {
         return result.sorted().takeIf { it.isNotEmpty() }
     }
 
-    private fun List<LyricWord>.toWordTimestamps(): List<WordTimestamp>? {
-        return filter { it.text.isNotBlank() }
+    private fun List<LyricWord>.toWordTimestamps(): List<WordTimestamp>? =
+        filter { it.text.isNotBlank() }
             .map {
                 WordTimestamp(
                     text = it.text.trim(),
                     startTime = it.time,
-                    endTime = it.time + it.duration.coerceAtLeast(1)
+                    endTime = it.time + it.duration.coerceAtLeast(1),
                 )
-            }
-            .takeIf { it.isNotEmpty() }
-    }
+            }.takeIf { it.isNotEmpty() }
 
-    private fun buildText(words: List<LyricWord>): String {
-        return words.joinToString("") { it.text }.trim()
-    }
+    private fun buildText(words: List<LyricWord>): String = words.joinToString("") { it.text }.trim()
 
     private fun executeGet(url: String): String? {
-        val request = Request.Builder()
-            .url(url)
-            .header("User-Agent", USER_AGENT)
-            .header("Accept", "application/json,text/plain,*/*")
-            .build()
+        val request =
+            Request
+                .Builder()
+                .url(url)
+                .header("User-Agent", USER_AGENT)
+                .header("Accept", "application/json,text/plain,*/*")
+                .build()
 
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) return null

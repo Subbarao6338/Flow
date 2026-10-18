@@ -39,6 +39,12 @@ data class LiveChatSeedResponse(
 
     // The seed continuation token
     fun seedContinuation(): String? =
-        contents?.twoColumnWatchNextResults?.conversationBar?.liveChatRenderer
-            ?.continuations?.firstOrNull()?.reloadContinuationData?.continuation
+        contents
+            ?.twoColumnWatchNextResults
+            ?.conversationBar
+            ?.liveChatRenderer
+            ?.continuations
+            ?.firstOrNull()
+            ?.reloadContinuationData
+            ?.continuation
 }

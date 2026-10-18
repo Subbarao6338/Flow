@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 object PlayerHardwareController {
-
     private val _fullscreenVideoActive = MutableStateFlow(false)
     val fullscreenVideoActive: StateFlow<Boolean> = _fullscreenVideoActive.asStateFlow()
 

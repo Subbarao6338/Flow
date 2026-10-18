@@ -24,7 +24,7 @@ import androidx.core.text.HtmlCompat
 fun formatRichText(
     text: String,
     primaryColor: Color,
-    textColor: Color
+    textColor: Color,
 ): AnnotatedString {
     // 1. Replace <br> with newlines, then parse HTML into a Spanned to decode entities and extract URLSpans.
     val processedHtml = text.replace(Regex("(?i)<br\\s*/?>"), "\n")
@@ -32,9 +32,10 @@ fun formatRichText(
     val plainText = spanned.toString().trimEnd()
 
     val urlSpans = spanned.getSpans(0, spanned.length, URLSpan::class.java)
-    val htmlLinkRanges: List<IntRange> = urlSpans.map {
-        spanned.getSpanStart(it) until spanned.getSpanEnd(it)
-    }
+    val htmlLinkRanges: List<IntRange> =
+        urlSpans.map {
+            spanned.getSpanStart(it) until spanned.getSpanEnd(it)
+        }
 
     return buildAnnotatedString {
         append(plainText)
@@ -63,7 +64,8 @@ fun formatRichText(
             if (annotatedTimestampRanges.any { range -> s in range || (s <= range.first && e >= range.last + 1) }) continue
             addStyle(
                 SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Medium),
-                s, e
+                s,
+                e,
             )
             addStringAnnotation("URL", absoluteUrl, s, e)
             addLink(LinkAnnotation.Url(absoluteUrl), s, e)
@@ -77,14 +79,16 @@ fun formatRichText(
             val e = s + displayUrl.length
             if (displayUrl.isBlank()) continue
             if (htmlLinkRanges.any { s in it } || annotatedTimestampRanges.any { s in it }) continue
-            val absoluteUrl = if (displayUrl.startsWith("www.", ignoreCase = true)) {
-                "https://$displayUrl"
-            } else {
-                displayUrl
-            }
+            val absoluteUrl =
+                if (displayUrl.startsWith("www.", ignoreCase = true)) {
+                    "https://$displayUrl"
+                } else {
+                    displayUrl
+                }
             addStyle(
                 SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Medium),
-                s, e
+                s,
+                e,
             )
             addStringAnnotation("URL", absoluteUrl, s, e)
             addLink(LinkAnnotation.Url(absoluteUrl), s, e)

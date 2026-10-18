@@ -39,8 +39,7 @@ data class GetLiveChatResponse(
                 ?: invalidationContinuationData?.continuation
                 ?: reloadContinuationData?.continuation
 
-        fun timeoutMs(): Long? =
-            timedContinuationData?.timeoutMs ?: invalidationContinuationData?.timeoutMs
+        fun timeoutMs(): Long? = timedContinuationData?.timeoutMs ?: invalidationContinuationData?.timeoutMs
     }
 
     @Serializable
@@ -60,7 +59,7 @@ data class GetLiveChatResponse(
         )
     }
 
-    // One renderer shape covering text / paid / membership messages 
+    // One renderer shape covering text / paid / membership messages
     @Serializable
     data class ChatMessageRenderer(
         val id: String? = null,
@@ -93,14 +92,21 @@ data class GetLiveChatResponse(
                 val image: ChatImage? = null,
             )
 
-            fun displayText(): String = when {
-                text != null -> text
-                emoji != null -> {
-                    val unicode = emoji.emojiId?.takeIf { emoji.isCustomEmoji != true }
-                    unicode ?: emoji.shortcuts.firstOrNull() ?: emoji.emojiId ?: ""
+            fun displayText(): String =
+                when {
+                    text != null -> {
+                        text
+                    }
+
+                    emoji != null -> {
+                        val unicode = emoji.emojiId?.takeIf { emoji.isCustomEmoji != true }
+                        unicode ?: emoji.shortcuts.firstOrNull() ?: emoji.emojiId ?: ""
+                    }
+
+                    else -> {
+                        ""
+                    }
                 }
-                else -> ""
-            }
         }
 
         fun plainText(): String = runs.joinToString("") { it.displayText() }
@@ -139,7 +145,9 @@ data class GetLiveChatResponse(
             val customThumbnail: ChatImage? = null,
         ) {
             @Serializable
-            data class Icon(val iconType: String? = null)
+            data class Icon(
+                val iconType: String? = null,
+            )
         }
     }
 }

@@ -24,24 +24,26 @@ class DiscordPlaybackSource(
     private val shortsPool: ShortsPlayerPool = ShortsPlayerPool.getInstance(),
     private val selector: DiscordPlaybackSelector = DiscordPlaybackSelector(),
 ) {
-    val playback: Flow<PlaybackSnapshot?> = discordPlaybackSnapshotFlow(
-        signals = merge(
-            GlobalPlayerState.currentVideo.map { Unit },
-            videoManager.playerState.map { Unit },
-            EnhancedMusicPlayerManager.currentTrack.map { Unit },
-            EnhancedMusicPlayerManager.playerState.map { Unit },
-            shortsPool.currentVideo.map { Unit },
-            ticker(),
-        ),
-        snapshotDispatcher = Dispatchers.Main.immediate,
-        readSnapshot = {
-            selector.select(
-                short = shortSnapshot(),
-                video = videoSnapshot(),
-                music = musicSnapshot(),
-            )
-        },
-    )
+    val playback: Flow<PlaybackSnapshot?> =
+        discordPlaybackSnapshotFlow(
+            signals =
+                merge(
+                    GlobalPlayerState.currentVideo.map { Unit },
+                    videoManager.playerState.map { Unit },
+                    EnhancedMusicPlayerManager.currentTrack.map { Unit },
+                    EnhancedMusicPlayerManager.playerState.map { Unit },
+                    shortsPool.currentVideo.map { Unit },
+                    ticker(),
+                ),
+            snapshotDispatcher = Dispatchers.Main.immediate,
+            readSnapshot = {
+                selector.select(
+                    short = shortSnapshot(),
+                    video = videoSnapshot(),
+                    music = musicSnapshot(),
+                )
+            },
+        )
 
     private fun shortSnapshot(): PlaybackSnapshot? {
         val short = shortsPool.currentVideo.value ?: return null
@@ -65,11 +67,12 @@ class DiscordPlaybackSource(
         if (state.currentVideoId != video.id) return null
         val isLive = state.isLive || video.isLive
         return PlaybackSnapshot(
-            kind = when {
-                isLive -> PlaybackKind.LIVE
-                video.isShort -> PlaybackKind.SHORT
-                else -> PlaybackKind.VIDEO
-            },
+            kind =
+                when {
+                    isLive -> PlaybackKind.LIVE
+                    video.isShort -> PlaybackKind.SHORT
+                    else -> PlaybackKind.VIDEO
+                },
             mediaId = video.id,
             title = video.title,
             subtitle = video.channelName,
@@ -97,12 +100,13 @@ class DiscordPlaybackSource(
         )
     }
 
-    private fun ticker(): Flow<Unit> = flow {
-        while (currentCoroutineContext().isActive) {
-            emit(Unit)
-            delay(POSITION_SAMPLE_INTERVAL_MS)
+    private fun ticker(): Flow<Unit> =
+        flow {
+            while (currentCoroutineContext().isActive) {
+                emit(Unit)
+                delay(POSITION_SAMPLE_INTERVAL_MS)
+            }
         }
-    }
 
     private companion object {
         const val POSITION_SAMPLE_INTERVAL_MS = 5_000L
@@ -113,9 +117,10 @@ internal fun discordPlaybackSnapshotFlow(
     signals: Flow<Unit>,
     snapshotDispatcher: CoroutineDispatcher,
     readSnapshot: () -> PlaybackSnapshot?,
-): Flow<PlaybackSnapshot?> = signals
-    .map { readSnapshot() }
-    // Media3 players are owned by the main application thread. The presence runtime
-    // collects on IO for its gateway calls, so keep every snapshot read upstream on main.
-    .flowOn(snapshotDispatcher)
-    .distinctUntilChanged()
+): Flow<PlaybackSnapshot?> =
+    signals
+        .map { readSnapshot() }
+        // Media3 players are owned by the main application thread. The presence runtime
+        // collects on IO for its gateway calls, so keep every snapshot read upstream on main.
+        .flowOn(snapshotDispatcher)
+        .distinctUntilChanged()

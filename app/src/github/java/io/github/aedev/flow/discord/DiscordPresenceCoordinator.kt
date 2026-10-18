@@ -32,14 +32,17 @@ class DiscordPresenceCoordinator(
                 when (val decision = policy.decide(lastSent, candidate, nowElapsedMs())) {
                     is DiscordPresenceDecision.Send -> {
                         if (transport.update(decision.payload)) {
-                            lastSent = SentPresence(
-                                payload = decision.payload,
-                                sentAtElapsedMs = nowElapsedMs(),
-                            )
+                            lastSent =
+                                SentPresence(
+                                    payload = decision.payload,
+                                    sentAtElapsedMs = nowElapsedMs(),
+                                )
                         }
                     }
 
-                    DiscordPresenceDecision.Skip -> Unit
+                    DiscordPresenceDecision.Skip -> {
+                        Unit
+                    }
                 }
             }
     }

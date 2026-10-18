@@ -8,7 +8,7 @@ class SeekbarPaddingPolicyTest {
     fun `portrait mode defaults to full width`() {
         assertEquals(
             SeekbarPaddingMode.FULL_WIDTH,
-            resolvePortraitSeekbarPaddingMode(storedMode = null)
+            resolvePortraitSeekbarPaddingMode(storedMode = null),
         )
     }
 
@@ -16,7 +16,7 @@ class SeekbarPaddingPolicyTest {
     fun `legacy portrait default maps to spaced`() {
         assertEquals(
             SeekbarPaddingMode.SPACED,
-            resolvePortraitSeekbarPaddingMode(SeekbarPaddingMode.DEFAULT.name)
+            resolvePortraitSeekbarPaddingMode(SeekbarPaddingMode.DEFAULT.name),
         )
     }
 
@@ -28,8 +28,8 @@ class SeekbarPaddingPolicyTest {
                 mode = SeekbarPaddingMode.FULL_WIDTH,
                 customPaddingDp = 40,
                 defaultPaddingDp = 16,
-                maxPaddingDp = 64
-            )
+                maxPaddingDp = 64,
+            ),
         )
     }
 
@@ -41,8 +41,8 @@ class SeekbarPaddingPolicyTest {
                 mode = SeekbarPaddingMode.SPACED,
                 customPaddingDp = 40,
                 defaultPaddingDp = 16,
-                maxPaddingDp = 64
-            )
+                maxPaddingDp = 64,
+            ),
         )
     }
 
@@ -54,8 +54,8 @@ class SeekbarPaddingPolicyTest {
                 mode = SeekbarPaddingMode.CUSTOM,
                 customPaddingDp = 120,
                 defaultPaddingDp = 16,
-                maxPaddingDp = 64
-            )
+                maxPaddingDp = 64,
+            ),
         )
     }
 }

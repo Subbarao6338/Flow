@@ -12,7 +12,7 @@ class ClearedMediaRecoveryStateTest {
             videoId = "video-id",
             positionMs = 12_345L,
             playWhenReady = false,
-            localFilePath = "/media/video.mp4"
+            localFilePath = "/media/video.mp4",
         )
 
         assertThat(state.pendingFor("video-id")).isEqualTo(
@@ -20,8 +20,8 @@ class ClearedMediaRecoveryStateTest {
                 videoId = "video-id",
                 positionMs = 12_345L,
                 playWhenReady = false,
-                localFilePath = "/media/video.mp4"
-            )
+                localFilePath = "/media/video.mp4",
+            ),
         )
     }
 

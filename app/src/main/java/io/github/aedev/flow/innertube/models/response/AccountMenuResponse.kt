@@ -2,8 +2,8 @@ package io.github.aedev.flow.innertube.models.response
 
 import io.github.aedev.flow.innertube.models.AccountInfo
 import io.github.aedev.flow.innertube.models.Runs
-import io.github.aedev.flow.innertube.models.Thumbnails
 import io.github.aedev.flow.innertube.models.Thumbnail
+import io.github.aedev.flow.innertube.models.Thumbnails
 import kotlinx.serialization.Serializable
 
 @Serializable

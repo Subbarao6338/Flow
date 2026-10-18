@@ -5,7 +5,8 @@ class DiscordPlaybackSelector {
         short: PlaybackSnapshot?,
         video: PlaybackSnapshot?,
         music: PlaybackSnapshot?,
-    ): PlaybackSnapshot? = sequenceOf(short, video, music)
-        .filterNotNull()
-        .firstOrNull { snapshot -> snapshot.isPlaying && snapshot.mediaId.isNotBlank() }
+    ): PlaybackSnapshot? =
+        sequenceOf(short, video, music)
+            .filterNotNull()
+            .firstOrNull { snapshot -> snapshot.isPlaying && snapshot.mediaId.isNotBlank() }
 }

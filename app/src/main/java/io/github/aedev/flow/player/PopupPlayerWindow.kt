@@ -35,54 +35,68 @@ internal class PopupPlayerWindow(
         val screenWidth = context.resources.displayMetrics.widthPixels
         val width = (screenWidth * 0.72f).toInt().coerceIn((240 * density).toInt(), (420 * density).toInt())
         val height = width * 9 / 16
-        val params = WindowManager.LayoutParams(
-            width,
-            height,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-            } else {
-                @Suppress("DEPRECATION")
-                WindowManager.LayoutParams.TYPE_PHONE
-            },
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.TRANSLUCENT,
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
-            x = (screenWidth - width) / 2
-            y = (72 * density).toInt()
-        }
+        val params =
+            WindowManager
+                .LayoutParams(
+                    width,
+                    height,
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                    } else {
+                        @Suppress("DEPRECATION")
+                        WindowManager.LayoutParams.TYPE_PHONE
+                    },
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                    PixelFormat.TRANSLUCENT,
+                ).apply {
+                    gravity = Gravity.TOP or Gravity.START
+                    x = (screenWidth - width) / 2
+                    y = (72 * density).toInt()
+                }
 
         val root = FrameLayout(context)
-        val video = PlayerView(context).apply {
-            this.player = player
-            useController = true
-            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-            setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
-            setKeepContentOnPlayerReset(true)
-        }
-        root.addView(video, FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-        ))
+        val video =
+            PlayerView(context).apply {
+                this.player = player
+                useController = true
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+                setKeepContentOnPlayerReset(true)
+            }
+        root.addView(
+            video,
+            FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            ),
+        )
 
-        val closeButton = ImageButton(context).apply {
-            setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
-            background = null
-            contentDescription = context.getString(R.string.close_popup_player)
-            setOnClickListener { onClose() }
-        }
-        root.addView(closeButton, FrameLayout.LayoutParams(
-            (48 * density).toInt(),
-            (48 * density).toInt(),
-            Gravity.TOP or Gravity.END,
-        ))
+        val closeButton =
+            ImageButton(context).apply {
+                setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+                background = null
+                contentDescription = context.getString(R.string.close_popup_player)
+                setOnClickListener { onClose() }
+            }
+        root.addView(
+            closeButton,
+            FrameLayout.LayoutParams(
+                (48 * density).toInt(),
+                (48 * density).toInt(),
+                Gravity.TOP or Gravity.END,
+            ),
+        )
 
         val dragHandle = View(context)
-        root.addView(dragHandle, FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            (40 * density).toInt(),
-        ).apply { marginEnd = (48 * density).toInt() })
+        root.addView(
+            dragHandle,
+            FrameLayout
+                .LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    (40 * density).toInt(),
+                ).apply { marginEnd = (48 * density).toInt() },
+        )
         attachDragHandling(dragHandle, params)
 
         return runCatching {
@@ -108,7 +122,10 @@ internal class PopupPlayerWindow(
         PictureInPictureHelper.setPopupActive(false)
     }
 
-    private fun attachDragHandling(handle: View, params: WindowManager.LayoutParams) {
+    private fun attachDragHandling(
+        handle: View,
+        params: WindowManager.LayoutParams,
+    ) {
         var startX = 0
         var startY = 0
         var touchX = 0f
@@ -122,13 +139,17 @@ internal class PopupPlayerWindow(
                     touchY = event.rawY
                     true
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     params.x = startX + (event.rawX - touchX).toInt()
                     params.y = startY + (event.rawY - touchY).toInt()
                     container?.let { runCatching { windowManager.updateViewLayout(it, params) } }
                     true
                 }
-                else -> false
+
+                else -> {
+                    false
+                }
             }
         }
     }

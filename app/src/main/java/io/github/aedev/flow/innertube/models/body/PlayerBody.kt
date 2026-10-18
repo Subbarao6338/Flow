@@ -36,17 +36,17 @@ data class PlayerBody(
         // response stays linked to the server's enforcement session.
         @Serializable
         data class ReloadPlaybackContext(
-            val reloadPlaybackParams: ReloadPlaybackParams
+            val reloadPlaybackParams: ReloadPlaybackParams,
         ) {
             @Serializable
             data class ReloadPlaybackParams(
-                val token: String
+                val token: String,
             )
         }
     }
 
     @Serializable
     data class ServiceIntegrityDimensions(
-        val poToken: String
+        val poToken: String,
     )
 }

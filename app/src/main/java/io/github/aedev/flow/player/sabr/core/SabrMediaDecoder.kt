@@ -12,20 +12,25 @@ internal object SabrMediaDecoder {
     private const val COMPRESSION_GZIP = 1
     private const val COMPRESSION_BROTLI = 2
 
-    fun decode(compressionType: Int, data: ByteArray): ByteArray = when (compressionType) {
-        COMPRESSION_NONE -> data
-        COMPRESSION_GZIP -> decompress(data, ::GZIPInputStream)
-        COMPRESSION_BROTLI -> decompress(data, ::BrotliInputStream)
-        else -> throw IOException("Unsupported SABR media compression: $compressionType")
-    }
+    fun decode(
+        compressionType: Int,
+        data: ByteArray,
+    ): ByteArray =
+        when (compressionType) {
+            COMPRESSION_NONE -> data
+            COMPRESSION_GZIP -> decompress(data, ::GZIPInputStream)
+            COMPRESSION_BROTLI -> decompress(data, ::BrotliInputStream)
+            else -> throw IOException("Unsupported SABR media compression: $compressionType")
+        }
 
     private fun decompress(
         data: ByteArray,
-        inputFactory: (ByteArrayInputStream) -> InputStream
-    ): ByteArray = inputFactory(ByteArrayInputStream(data)).use { input ->
-        ByteArrayOutputStream().use { output ->
-            input.copyTo(output)
-            output.toByteArray()
+        inputFactory: (ByteArrayInputStream) -> InputStream,
+    ): ByteArray =
+        inputFactory(ByteArrayInputStream(data)).use { input ->
+            ByteArrayOutputStream().use { output ->
+                input.copyTo(output)
+                output.toByteArray()
+            }
         }
-    }
 }

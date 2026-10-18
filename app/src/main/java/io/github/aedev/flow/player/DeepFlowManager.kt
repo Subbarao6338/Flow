@@ -20,13 +20,13 @@ import kotlinx.coroutines.launch
 object DeepFlowManager {
     private enum class DisableReason {
         Manual,
-        Timer
+        Timer,
     }
 
     private data class DeepFlowSnapshot(
         val active: Boolean,
         val activatedAt: Long,
-        val expireHours: Int
+        val expireHours: Int,
     )
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -47,39 +47,40 @@ object DeepFlowManager {
         observerJob?.cancel()
 
         val preferences = PlayerPreferences(appContext)
-        observerJob = scope.launch {
-            combine(
-                preferences.deepFlowActive,
-                preferences.deepFlowActivatedAt,
-                preferences.deepFlowExpireHours
-            ) { active, activatedAt, expireHours ->
-                DeepFlowSnapshot(active, activatedAt, expireHours)
-            }.collectLatest { snapshot ->
-                val previousActive = lastKnownActive
-                if (previousActive != null && previousActive != snapshot.active) {
-                    pauseCurrentVideoIfNeeded()
-                    _messages.emit(appContext.deepFlowMessage(snapshot.active, pendingDisableReason))
-                    pendingDisableReason = null
-                }
-                lastKnownActive = snapshot.active
+        observerJob =
+            scope.launch {
+                combine(
+                    preferences.deepFlowActive,
+                    preferences.deepFlowActivatedAt,
+                    preferences.deepFlowExpireHours,
+                ) { active, activatedAt, expireHours ->
+                    DeepFlowSnapshot(active, activatedAt, expireHours)
+                }.collectLatest { snapshot ->
+                    val previousActive = lastKnownActive
+                    if (previousActive != null && previousActive != snapshot.active) {
+                        pauseCurrentVideoIfNeeded()
+                        _messages.emit(appContext.deepFlowMessage(snapshot.active, pendingDisableReason))
+                        pendingDisableReason = null
+                    }
+                    lastKnownActive = snapshot.active
 
-                if (!snapshot.active || snapshot.activatedAt == 0L || snapshot.expireHours == DEEP_FLOW_NEVER_EXPIRES_HOURS) {
-                    return@collectLatest
-                }
+                    if (!snapshot.active || snapshot.activatedAt == 0L || snapshot.expireHours == DEEP_FLOW_NEVER_EXPIRES_HOURS) {
+                        return@collectLatest
+                    }
 
-                val expiresAt = snapshot.activatedAt + snapshot.expireHours * 3_600_000L
-                val remainingMs = expiresAt - System.currentTimeMillis()
-                if (remainingMs <= 0L) {
+                    val expiresAt = snapshot.activatedAt + snapshot.expireHours * 3_600_000L
+                    val remainingMs = expiresAt - System.currentTimeMillis()
+                    if (remainingMs <= 0L) {
+                        pendingDisableReason = DisableReason.Timer
+                        preferences.setDeepFlowActive(false)
+                        return@collectLatest
+                    }
+
+                    delay(remainingMs)
                     pendingDisableReason = DisableReason.Timer
                     preferences.setDeepFlowActive(false)
-                    return@collectLatest
                 }
-
-                delay(remainingMs)
-                pendingDisableReason = DisableReason.Timer
-                preferences.setDeepFlowActive(false)
             }
-        }
     }
 
     suspend fun toggle(context: Context): Boolean {
@@ -89,7 +90,10 @@ object DeepFlowManager {
         return nextEnabled
     }
 
-    suspend fun setEnabled(context: Context, enabled: Boolean): Boolean {
+    suspend fun setEnabled(
+        context: Context,
+        enabled: Boolean,
+    ): Boolean {
         val preferences = PlayerPreferences(context.applicationContext)
         val currentEnabled = preferences.deepFlowActive.first()
         if (currentEnabled == enabled) return enabled
@@ -109,11 +113,13 @@ object DeepFlowManager {
         }
     }
 
-    private fun Context.deepFlowMessage(active: Boolean, disableReason: DisableReason?): String {
-        return when {
+    private fun Context.deepFlowMessage(
+        active: Boolean,
+        disableReason: DisableReason?,
+    ): String =
+        when {
             active -> getString(R.string.deep_flow_enabled_message)
             disableReason == DisableReason.Timer -> getString(R.string.deep_flow_expired_message)
             else -> getString(R.string.deep_flow_disabled_message)
         }
-    }
 }

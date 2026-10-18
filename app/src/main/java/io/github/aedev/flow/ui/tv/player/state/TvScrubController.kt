@@ -7,7 +7,6 @@ package io.github.aedev.flow.ui.tv.player.state
  * exactly one seek.
  */
 class TvScrubController {
-
     data class ScrubState(
         val isScrubbing: Boolean = false,
         val targetMs: Long = 0L,
@@ -47,11 +46,12 @@ class TvScrubController {
 
     companion object {
         /** Acceleration ladder: 10s → 30s → 60s → 120s as the key repeats. */
-        fun stepSizeFor(repeatCount: Int): Long = when {
-            repeatCount >= 16 -> 120_000L
-            repeatCount >= 8 -> 60_000L
-            repeatCount >= 3 -> 30_000L
-            else -> 10_000L
-        }
+        fun stepSizeFor(repeatCount: Int): Long =
+            when {
+                repeatCount >= 16 -> 120_000L
+                repeatCount >= 8 -> 60_000L
+                repeatCount >= 3 -> 30_000L
+                else -> 10_000L
+            }
     }
 }

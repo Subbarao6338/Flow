@@ -3,13 +3,15 @@ package io.github.aedev.flow.utils
 import org.schabi.newpipe.extractor.Image
 
 fun List<Image>?.bestImageUrl(): String =
-    this.orEmpty()
+    this
+        .orEmpty()
         .maxByOrNull { maxOf(it.width, it.height) }
         ?.url
         .orEmpty()
 
 fun List<Image>?.distinctBestImageUrls(limit: Int = 2): List<String> =
-    this.orEmpty()
+    this
+        .orEmpty()
         .asSequence()
         .filter { !it.url.isNullOrBlank() }
         .sortedByDescending { maxOf(it.width, it.height) }

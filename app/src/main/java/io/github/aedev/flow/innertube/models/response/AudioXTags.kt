@@ -12,16 +12,16 @@ import java.util.Base64
  * read directly here instead of pulling in a proto schema for them.
  */
 internal object AudioXTags {
-
-    private const val TAG_FIELD = 0x0a      // top level: repeated tag, wire type 2
-    private const val KEY_FIELD = 0x0a      // submessage field 1
-    private const val VALUE_FIELD = 0x12    // submessage field 2
+    private const val TAG_FIELD = 0x0a // top level: repeated tag, wire type 2
+    private const val KEY_FIELD = 0x0a // submessage field 1
+    private const val VALUE_FIELD = 0x12 // submessage field 2
     private const val MAX_VARINT_SHIFT = 28
 
-    fun decode(raw: String): Map<String, String> = runCatching {
-        val normalized = raw.replace('+', '-').replace('/', '_').trimEnd('=')
-        parse(Base64.getUrlDecoder().decode(normalized))
-    }.getOrDefault(emptyMap())
+    fun decode(raw: String): Map<String, String> =
+        runCatching {
+            val normalized = raw.replace('+', '-').replace('/', '_').trimEnd('=')
+            parse(Base64.getUrlDecoder().decode(normalized))
+        }.getOrDefault(emptyMap())
 
     private fun parse(bytes: ByteArray): Map<String, String> {
         val tags = mutableMapOf<String, String>()
@@ -37,7 +37,11 @@ internal object AudioXTags {
         return tags
     }
 
-    private fun parsePair(bytes: ByteArray, start: Int, end: Int): Pair<String, String>? {
+    private fun parsePair(
+        bytes: ByteArray,
+        start: Int,
+        end: Int,
+    ): Pair<String, String>? {
         var offset = start
         var key: String? = null
         var value: String? = null
@@ -54,9 +58,15 @@ internal object AudioXTags {
         return key?.let { parsedKey -> value?.let { parsedKey to it } }
     }
 
-    private data class Varint(val value: Int, val offset: Int)
+    private data class Varint(
+        val value: Int,
+        val offset: Int,
+    )
 
-    private fun readVarint(bytes: ByteArray, start: Int): Varint? {
+    private fun readVarint(
+        bytes: ByteArray,
+        start: Int,
+    ): Varint? {
         var result = 0
         var shift = 0
         var offset = start

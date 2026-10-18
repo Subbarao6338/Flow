@@ -18,10 +18,11 @@ internal class DiscordReconnectBackoff(
 
     fun recordFailure() {
         failures = (failures + 1).coerceAtMost(MAX_EXPONENT)
-        val baseDelay = min(
-            initialDelayMs * (1L shl (failures - 1)),
-            maximumDelayMs,
-        )
+        val baseDelay =
+            min(
+                initialDelayMs * (1L shl (failures - 1)),
+                maximumDelayMs,
+            )
         val jitterBound = (baseDelay / 4L).coerceAtLeast(1L)
         nextAttemptAtMs = nowElapsedMs() + baseDelay + jitterMs(jitterBound)
     }

@@ -30,9 +30,10 @@ internal fun ChannelRequestErrorState(
 ) {
     val context = LocalContext.current
     Column(
-        modifier = modifier
-            .widthIn(max = 360.dp)
-            .padding(32.dp),
+        modifier =
+            modifier
+                .widthIn(max = 360.dp)
+                .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -54,21 +55,23 @@ internal fun ChannelRequestErrorState(
             OutlinedButton(
                 onClick = {
                     val clipboard = context.getSystemService(ClipboardManager::class.java)
-                    val copied = runCatching {
-                        clipboard?.setPrimaryClip(
-                            ClipData.newPlainText(
-                                context.getString(R.string.channel_error_log_clip_label),
-                                errorLog,
-                            )
-                        ) ?: error("Clipboard service unavailable")
-                    }.isSuccess
-                    Toast.makeText(
-                        context,
-                        context.getString(
-                            if (copied) R.string.logs_copied else R.string.logs_copy_failed
-                        ),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    val copied =
+                        runCatching {
+                            clipboard?.setPrimaryClip(
+                                ClipData.newPlainText(
+                                    context.getString(R.string.channel_error_log_clip_label),
+                                    errorLog,
+                                ),
+                            ) ?: error("Clipboard service unavailable")
+                        }.isSuccess
+                    Toast
+                        .makeText(
+                            context,
+                            context.getString(
+                                if (copied) R.string.logs_copied else R.string.logs_copy_failed,
+                            ),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 },
                 modifier = Modifier.weight(1f),
             ) {

@@ -10,9 +10,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 object VideoCollaboratorResolver {
-    private val lookup = VideoCollaboratorLookup(
-        fetchCollaborators = YouTube::videoCollaborators
-    )
+    private val lookup =
+        VideoCollaboratorLookup(
+            fetchCollaborators = YouTube::videoCollaborators,
+        )
 
     suspend fun resolve(videoId: String): List<VideoCollaborator> = lookup.resolve(videoId)
 }
@@ -37,17 +38,20 @@ internal class VideoCollaboratorLookup(
             requestLock(videoId).withLock {
                 cache[videoId]?.let { return@withLock it }
 
-                val result = withTimeoutOrNull(timeoutMillis) {
-                    fetchCollaborators(videoId)
-                } ?: return@withLock emptyList()
-                val collaborators = result.getOrElse {
-                    return@withLock emptyList()
-                }
-                val ttlMillis = if (collaborators.isEmpty()) {
-                    negativeCacheTtlMillis
-                } else {
-                    positiveCacheTtlMillis
-                }
+                val result =
+                    withTimeoutOrNull(timeoutMillis) {
+                        fetchCollaborators(videoId)
+                    } ?: return@withLock emptyList()
+                val collaborators =
+                    result.getOrElse {
+                        return@withLock emptyList()
+                    }
+                val ttlMillis =
+                    if (collaborators.isEmpty()) {
+                        negativeCacheTtlMillis
+                    } else {
+                        positiveCacheTtlMillis
+                    }
                 cache.put(videoId, collaborators, ttlMillis)
                 collaborators
             }
@@ -73,11 +77,10 @@ private class TimedCollaboratorCache(
         val expiresAtMillis: Long,
     )
 
-    private val entries = object : LinkedHashMap<String, Entry>(maxSize, 0.75f, true) {
-        override fun removeEldestEntry(
-            eldest: MutableMap.MutableEntry<String, Entry>?,
-        ): Boolean = size > maxSize
-    }
+    private val entries =
+        object : LinkedHashMap<String, Entry>(maxSize, 0.75f, true) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Entry>?): Boolean = size > maxSize
+        }
 
     @Synchronized
     operator fun get(videoId: String): List<VideoCollaborator>? {
@@ -95,9 +98,10 @@ private class TimedCollaboratorCache(
         collaborators: List<VideoCollaborator>,
         ttlMillis: Long,
     ) {
-        entries[videoId] = Entry(
-            collaborators = collaborators,
-            expiresAtMillis = timeSourceMillis() + ttlMillis,
-        )
+        entries[videoId] =
+            Entry(
+                collaborators = collaborators,
+                expiresAtMillis = timeSourceMillis() + ttlMillis,
+            )
     }
 }

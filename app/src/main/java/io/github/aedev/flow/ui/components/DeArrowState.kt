@@ -7,14 +7,18 @@ import io.github.aedev.flow.data.model.DeArrowResult
 import io.github.aedev.flow.data.repository.DeArrowRepository
 
 @Composable
-internal fun rememberDeArrowResult(videoId: String, enabled: Boolean): DeArrowResult? =
+internal fun rememberDeArrowResult(
+    videoId: String,
+    enabled: Boolean,
+): DeArrowResult? =
     key(videoId, enabled) {
         produceState<DeArrowResult?>(
-            initialValue = if (enabled) {
-                DeArrowRepository.getCachedDeArrowResult(videoId)
-            } else {
-                null
-            },
+            initialValue =
+                if (enabled) {
+                    DeArrowRepository.getCachedDeArrowResult(videoId)
+                } else {
+                    null
+                },
             key1 = videoId,
             key2 = enabled,
         ) {

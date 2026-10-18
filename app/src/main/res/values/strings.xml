@@ -4362,4 +4362,20 @@
     <string name="scrobbling_import_failed">Could not read your top artists</string>
     <string name="music_home_lastfm_discover">Discover with Last.fm</string>
     <string name="music_home_lastfm_discover_subtitle">Picked by Last.fm listeners from your on repeat</string>
+
+    <string name="youtube_accounts">YouTube Accounts</string>
+    <string name="switch_account">Switch Account</string>
+    <string name="guest_incognito">Guest / Incognito</string>
+    <string name="no_youtube_account">No YouTube account</string>
+    <string name="add_youtube_account">Add YouTube Account</string>
+    <string name="activate_tv_code">Activate TV Code</string>
+    <string name="import_cookies">Import Cookies</string>
+    <string name="remove_account_title">Remove Account</string>
+    <string name="remove_account_body">Are you sure you want to remove %1$s?</string>
+    <string name="tv_activation_title">TV Code Activation</string>
+    <string name="tv_activation_subtitle">Go to youtube.com/activate and enter code:</string>
+    <string name="cookie_import_title">Import Cookies</string>
+    <string name="cookie_import_hint">Paste your YouTube cookie string below:</string>
+    <string name="cookie_import_confirm">Import</string>
+    <string name="btn_copy">Copy</string>
 </resources>

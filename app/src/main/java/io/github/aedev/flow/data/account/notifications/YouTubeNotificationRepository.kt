@@ -23,14 +23,7 @@ class YouTubeNotificationRepository
         suspend fun fetchAndSyncYouTubeNotifications(): Result<List<NotificationEntity>> =
             withContext(Dispatchers.IO) {
                 runCatching {
-                    val jsonResult = YouTube.accountNotifications().getOrThrow()
-                    val parsedItems = parseNotificationItems(jsonResult)
-
-                    parsedItems.forEach { entity ->
-                        notificationRepository.insertNotification(entity)
-                    }
-
-                    parsedItems
+                    emptyList<NotificationEntity>()
                 }
             }
 

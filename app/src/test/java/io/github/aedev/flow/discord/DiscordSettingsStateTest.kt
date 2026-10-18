@@ -6,13 +6,14 @@ import org.junit.Test
 class DiscordSettingsStateTest {
     @Test
     fun `unavailable transport cannot appear enabled`() {
-        val state = deriveDiscordSettingsState(
-            preferenceEnabled = true,
-            transportAvailable = false,
-            connectionState = DiscordConnectionState.UNAVAILABLE,
-            accountName = null,
-            errorMessage = "SDK missing",
-        )
+        val state =
+            deriveDiscordSettingsState(
+                preferenceEnabled = true,
+                transportAvailable = false,
+                connectionState = DiscordConnectionState.UNAVAILABLE,
+                accountName = null,
+                errorMessage = "SDK missing",
+            )
 
         assertThat(state.isEnabled).isFalse()
         assertThat(state.canEnable).isFalse()
@@ -21,39 +22,42 @@ class DiscordSettingsStateTest {
 
     @Test
     fun `available disabled setting reports off`() {
-        val state = deriveDiscordSettingsState(
-            preferenceEnabled = false,
-            transportAvailable = true,
-            connectionState = DiscordConnectionState.DISCONNECTED,
-            accountName = null,
-            errorMessage = null,
-        )
+        val state =
+            deriveDiscordSettingsState(
+                preferenceEnabled = false,
+                transportAvailable = true,
+                connectionState = DiscordConnectionState.DISCONNECTED,
+                accountName = null,
+                errorMessage = null,
+            )
 
         assertThat(state.summary).isEqualTo(DiscordSettingsSummary.OFF)
     }
 
     @Test
     fun `enabled unlinked setting reports not connected`() {
-        val state = deriveDiscordSettingsState(
-            preferenceEnabled = true,
-            transportAvailable = true,
-            connectionState = DiscordConnectionState.DISCONNECTED,
-            accountName = null,
-            errorMessage = null,
-        )
+        val state =
+            deriveDiscordSettingsState(
+                preferenceEnabled = true,
+                transportAvailable = true,
+                connectionState = DiscordConnectionState.DISCONNECTED,
+                accountName = null,
+                errorMessage = null,
+            )
 
         assertThat(state.summary).isEqualTo(DiscordSettingsSummary.NOT_CONNECTED)
     }
 
     @Test
     fun `connected setting exposes account`() {
-        val state = deriveDiscordSettingsState(
-            preferenceEnabled = true,
-            transportAvailable = true,
-            connectionState = DiscordConnectionState.CONNECTED,
-            accountName = "pasta",
-            errorMessage = null,
-        )
+        val state =
+            deriveDiscordSettingsState(
+                preferenceEnabled = true,
+                transportAvailable = true,
+                connectionState = DiscordConnectionState.CONNECTED,
+                accountName = "pasta",
+                errorMessage = null,
+            )
 
         assertThat(state.summary).isEqualTo(DiscordSettingsSummary.CONNECTED)
         assertThat(state.accountName).isEqualTo("pasta")
@@ -61,13 +65,14 @@ class DiscordSettingsStateTest {
 
     @Test
     fun `linked account remains ready while gateway is idle`() {
-        val state = deriveDiscordSettingsState(
-            preferenceEnabled = true,
-            transportAvailable = true,
-            connectionState = DiscordConnectionState.DISCONNECTED,
-            accountName = "pasta",
-            errorMessage = null,
-        )
+        val state =
+            deriveDiscordSettingsState(
+                preferenceEnabled = true,
+                transportAvailable = true,
+                connectionState = DiscordConnectionState.DISCONNECTED,
+                accountName = "pasta",
+                errorMessage = null,
+            )
 
         assertThat(state.summary).isEqualTo(DiscordSettingsSummary.READY)
         assertThat(state.accountName).isEqualTo("pasta")
@@ -75,13 +80,14 @@ class DiscordSettingsStateTest {
 
     @Test
     fun `transport error takes precedence while enabled`() {
-        val state = deriveDiscordSettingsState(
-            preferenceEnabled = true,
-            transportAvailable = true,
-            connectionState = DiscordConnectionState.ERROR,
-            accountName = null,
-            errorMessage = "Connection timed out",
-        )
+        val state =
+            deriveDiscordSettingsState(
+                preferenceEnabled = true,
+                transportAvailable = true,
+                connectionState = DiscordConnectionState.ERROR,
+                accountName = null,
+                errorMessage = "Connection timed out",
+            )
 
         assertThat(state.summary).isEqualTo(DiscordSettingsSummary.ERROR)
         assertThat(state.errorMessage).isEqualTo("Connection timed out")
@@ -89,13 +95,14 @@ class DiscordSettingsStateTest {
 
     @Test
     fun `connection error remains visible while preference is disabled`() {
-        val state = deriveDiscordSettingsState(
-            preferenceEnabled = false,
-            transportAvailable = true,
-            connectionState = DiscordConnectionState.ERROR,
-            accountName = null,
-            errorMessage = "Sign-in failed",
-        )
+        val state =
+            deriveDiscordSettingsState(
+                preferenceEnabled = false,
+                transportAvailable = true,
+                connectionState = DiscordConnectionState.ERROR,
+                accountName = null,
+                errorMessage = "Sign-in failed",
+            )
 
         assertThat(state.isEnabled).isFalse()
         assertThat(state.summary).isEqualTo(DiscordSettingsSummary.ERROR)

@@ -34,17 +34,19 @@ fun <T> TvMediaGrid(
     ProvideTvColumnPivot {
         LazyVerticalGrid(
             columns = columns,
-            modifier = modifier
-                .fillMaxSize()
-                .tvRowFocus(),
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .tvRowFocus(),
             horizontalArrangement = Arrangement.spacedBy(dimens.itemSpacing),
             verticalArrangement = Arrangement.spacedBy(dimens.itemSpacing),
-            contentPadding = contentPadding ?: PaddingValues(
-                start = dimens.overscanHorizontal,
-                end = dimens.overscanHorizontal,
-                top = 12.dp,
-                bottom = dimens.overscanVertical,
-            ),
+            contentPadding =
+                contentPadding ?: PaddingValues(
+                    start = dimens.overscanHorizontal,
+                    end = dimens.overscanHorizontal,
+                    top = 12.dp,
+                    bottom = dimens.overscanVertical,
+                ),
         ) {
             items(items = items, key = key) { item -> card(item) }
         }

@@ -13,24 +13,32 @@ import org.junit.Test
  * deliberately NOT title-merged.
  */
 class PlaylistReconcileTest {
-
-    private fun item(id: String, pos: Long, hlcStr: String) =
-        CanonicalPlaylistItem(videoId = id, position = pos, hlc = hlcStr)
+    private fun item(
+        id: String,
+        pos: Long,
+        hlcStr: String,
+    ) = CanonicalPlaylistItem(videoId = id, position = pos, hlc = hlcStr)
 
     @Test
     fun same_title_different_syncId_merges_onto_local_id() {
-        val local = listOf(
-            CanonicalPlaylist(
-                syncId = "local-uuid", title = " My  Gym Mix ", updatedHlc = "90:0:local",
-                items = listOf(item("v1", 0, "90:0:local")),
-            ),
-        )
-        val remote = listOf(
-            CanonicalPlaylist(
-                syncId = "desktop-uuid", title = "my gym mix", updatedHlc = "200:0:remote",
-                items = listOf(item("v2", 0, "200:0:remote"), item("v3", 1, "200:0:remote")),
-            ),
-        )
+        val local =
+            listOf(
+                CanonicalPlaylist(
+                    syncId = "local-uuid",
+                    title = " My  Gym Mix ",
+                    updatedHlc = "90:0:local",
+                    items = listOf(item("v1", 0, "90:0:local")),
+                ),
+            )
+        val remote =
+            listOf(
+                CanonicalPlaylist(
+                    syncId = "desktop-uuid",
+                    title = "my gym mix",
+                    updatedHlc = "200:0:remote",
+                    items = listOf(item("v2", 0, "200:0:remote"), item("v3", 1, "200:0:remote")),
+                ),
+            )
 
         val merged = PlaylistMerger.merge(local, remote)
 
@@ -42,18 +50,28 @@ class PlaylistReconcileTest {
 
     @Test
     fun youtube_playlists_are_not_title_merged() {
-        val local = listOf(
-            CanonicalPlaylist(
-                syncId = "a", origin = CanonicalPlaylist.ORIGIN_YOUTUBE, youtubeId = "PL_A",
-                isUserCreated = false, title = "Top Hits", updatedHlc = "100:0:l",
-            ),
-        )
-        val remote = listOf(
-            CanonicalPlaylist(
-                syncId = "b", origin = CanonicalPlaylist.ORIGIN_YOUTUBE, youtubeId = "PL_B",
-                isUserCreated = false, title = "Top Hits", updatedHlc = "100:0:r",
-            ),
-        )
+        val local =
+            listOf(
+                CanonicalPlaylist(
+                    syncId = "a",
+                    origin = CanonicalPlaylist.ORIGIN_YOUTUBE,
+                    youtubeId = "PL_A",
+                    isUserCreated = false,
+                    title = "Top Hits",
+                    updatedHlc = "100:0:l",
+                ),
+            )
+        val remote =
+            listOf(
+                CanonicalPlaylist(
+                    syncId = "b",
+                    origin = CanonicalPlaylist.ORIGIN_YOUTUBE,
+                    youtubeId = "PL_B",
+                    isUserCreated = false,
+                    title = "Top Hits",
+                    updatedHlc = "100:0:r",
+                ),
+            )
 
         val merged = PlaylistMerger.merge(local, remote)
 
@@ -62,12 +80,14 @@ class PlaylistReconcileTest {
 
     @Test
     fun music_and_video_with_same_title_do_not_merge() {
-        val local = listOf(
-            CanonicalPlaylist(syncId = "a", title = "Focus", isMusic = true, updatedHlc = "100:0:l"),
-        )
-        val remote = listOf(
-            CanonicalPlaylist(syncId = "b", title = "Focus", isMusic = false, updatedHlc = "100:0:r"),
-        )
+        val local =
+            listOf(
+                CanonicalPlaylist(syncId = "a", title = "Focus", isMusic = true, updatedHlc = "100:0:l"),
+            )
+        val remote =
+            listOf(
+                CanonicalPlaylist(syncId = "b", title = "Focus", isMusic = false, updatedHlc = "100:0:r"),
+            )
 
         val merged = PlaylistMerger.merge(local, remote)
 

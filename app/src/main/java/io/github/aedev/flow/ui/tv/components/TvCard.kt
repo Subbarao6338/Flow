@@ -34,23 +34,27 @@ fun TvCard(
         onClick = onClick,
         modifier = modifier.tvFocusScale(focusState),
         shape = shape,
-        colors = CardDefaults.cardColors(
-            containerColor = if (focused || selected) {
-                MaterialTheme.colorScheme.secondaryContainer
+        colors =
+            CardDefaults.cardColors(
+                containerColor =
+                    if (focused || selected) {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainer
+                    },
+                contentColor =
+                    if (focused || selected) {
+                        MaterialTheme.colorScheme.onSecondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+            ),
+        border =
+            if (focused) {
+                BorderStroke(dimens.focusBorderWidth, MaterialTheme.colorScheme.outline)
             } else {
-                MaterialTheme.colorScheme.surfaceContainer
+                null
             },
-            contentColor = if (focused || selected) {
-                MaterialTheme.colorScheme.onSecondaryContainer
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            },
-        ),
-        border = if (focused) {
-            BorderStroke(dimens.focusBorderWidth, MaterialTheme.colorScheme.outline)
-        } else {
-            null
-        },
         elevation = CardDefaults.cardElevation(defaultElevation = if (focused) 3.dp else 0.dp),
         content = content,
     )

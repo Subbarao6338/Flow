@@ -18,14 +18,16 @@ enum class TvPlayerPanel {
     COMMENTS,
     LIVE_CHAT,
     DESCRIPTION,
-    SAVE;
+    SAVE,
+    ;
 
     /** Back from a sub-page returns to its parent panel instead of the transport. */
     val parent: TvPlayerPanel?
-        get() = when (this) {
-            QUALITY, SPEED, AUDIO, SUBTITLES -> SETTINGS
-            else -> null
-        }
+        get() =
+            when (this) {
+                QUALITY, SPEED, AUDIO, SUBTITLES -> SETTINGS
+                else -> null
+            }
 }
 
 data class TvOverlayState(
@@ -39,8 +41,9 @@ data class TvOverlayState(
  * Auto-hide is *computed* here ([autoHideDeadline]) but executed by the UI with
  * a single restartable delay — never a polling loop.
  */
-class TvPlayerOverlayController(private val nowMs: () -> Long) {
-
+class TvPlayerOverlayController(
+    private val nowMs: () -> Long,
+) {
     private val _state = MutableStateFlow(TvOverlayState())
     val state: StateFlow<TvOverlayState> = _state.asStateFlow()
 
@@ -78,23 +81,31 @@ class TvPlayerOverlayController(private val nowMs: () -> Long) {
     }
 
     /** Walks PANEL → TRANSPORT → HIDDEN. Returns false when Back should close the player. */
-    fun onBack(): Boolean = when (_state.value.mode) {
-        TvOverlayMode.PANEL -> {
-            closePanel()
-            true
+    fun onBack(): Boolean =
+        when (_state.value.mode) {
+            TvOverlayMode.PANEL -> {
+                closePanel()
+                true
+            }
+
+            TvOverlayMode.TRANSPORT -> {
+                hide()
+                true
+            }
+
+            TvOverlayMode.HIDDEN -> {
+                false
+            }
         }
-        TvOverlayMode.TRANSPORT -> {
-            hide()
-            true
-        }
-        TvOverlayMode.HIDDEN -> false
-    }
 
     /**
      * Epoch-ms moment the transport should hide, or null when it must stay up
      * (hidden/panel mode, paused, or an active scrub).
      */
-    fun autoHideDeadline(isPlaying: Boolean, isScrubbing: Boolean): Long? {
+    fun autoHideDeadline(
+        isPlaying: Boolean,
+        isScrubbing: Boolean,
+    ): Long? {
         val current = _state.value
         return if (current.mode == TvOverlayMode.TRANSPORT && isPlaying && !isScrubbing) {
             current.lastInteractionAtMs + AUTO_HIDE_DELAY_MS

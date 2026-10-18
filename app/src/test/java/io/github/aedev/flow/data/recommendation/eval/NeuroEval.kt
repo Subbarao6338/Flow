@@ -25,17 +25,20 @@ import kotlin.math.sqrt
  * no Context), then computes ranking-quality metrics for before/after comparison.
  */
 internal object NeuroEval {
-
     /** Fixed clock so every metric is reproducible across runs/machines. */
     const val FIXED_NOW = 1_700_000_000_000L
 
-    data class Labeled(val video: Video, val vector: ContentVector, val relevance: Double)
+    data class Labeled(
+        val video: Video,
+        val vector: ContentVector,
+        val relevance: Double,
+    )
 
     data class Metrics(
         val ndcg: Double,
         val ild: Double,
         val coverage: Double,
-        val selfSuppression: Double
+        val selfSuppression: Double,
     )
 
     // ── Fixture builders (shared by all recommendation tests) ──
@@ -50,7 +53,7 @@ internal object NeuroEval {
         likeCount: Long = 0L,
         uploadDate: String = "2 weeks ago",
         isLive: Boolean = false,
-        isShort: Boolean = false
+        isShort: Boolean = false,
     ) = Video(
         id = id,
         title = title,
@@ -62,7 +65,7 @@ internal object NeuroEval {
         likeCount = likeCount,
         uploadDate = uploadDate,
         isLive = isLive,
-        isShort = isShort
+        isShort = isShort,
     )
 
     fun vec(
@@ -70,7 +73,7 @@ internal object NeuroEval {
         duration: Double = 0.5,
         pacing: Double = 0.5,
         complexity: Double = 0.5,
-        isLive: Double = 0.0
+        isLive: Double = 0.0,
     ) = ContentVector(topics.toMap(), duration, pacing, complexity, isLive)
 
     /**
@@ -85,7 +88,7 @@ internal object NeuroEval {
         impressions: Map<String, ImpressionEntry> = emptyMap(),
         watchHistory: Map<String, WatchEntry> = emptyMap(),
         recentInteractions: List<MomentumEntry> = emptyList(),
-        now: Long = FIXED_NOW
+        now: Long = FIXED_NOW,
     ) = ScoringParams(
         brain = brain,
         userSubs = userSubs,
@@ -103,39 +106,51 @@ internal object NeuroEval {
         watchHistory = watchHistory,
         recentInteractions = recentInteractions,
         candidatePoolSize = poolSize,
-        now = now
+        now = now,
     )
 
-    fun rankByScore(items: List<Labeled>, params: ScoringParams): List<Labeled> =
-        items.sortedByDescending { NeuroScoring.scoreCandidate(it.video, it.vector, params) }
+    fun rankByScore(
+        items: List<Labeled>,
+        params: ScoringParams,
+    ): List<Labeled> = items.sortedByDescending { NeuroScoring.scoreCandidate(it.video, it.vector, params) }
 
     // ── Metrics ──
 
     /** Normalised Discounted Cumulative Gain of the scorer's order vs. ideal. */
-    fun ndcg(ranked: List<Labeled>, k: Int): Double {
+    fun ndcg(
+        ranked: List<Labeled>,
+        k: Int,
+    ): Double {
         val dcg = dcg(ranked.take(k).map { it.relevance })
         val idcg = dcg(ranked.map { it.relevance }.sortedDescending().take(k))
         return if (idcg > 0.0) dcg / idcg else 0.0
     }
 
-    private fun dcg(rels: List<Double>): Double =
-        rels.mapIndexed { i, rel -> rel / log2(i + 2.0) }.sum()
+    private fun dcg(rels: List<Double>): Double = rels.mapIndexed { i, rel -> rel / log2(i + 2.0) }.sum()
 
     /** Intra-list diversity: mean pairwise topical distance over the top-k. */
-    fun ild(ranked: List<Labeled>, k: Int): Double {
+    fun ild(
+        ranked: List<Labeled>,
+        k: Int,
+    ): Double {
         val top = ranked.take(k)
         if (top.size < 2) return 0.0
         var sum = 0.0
         var pairs = 0
-        for (i in top.indices) for (j in i + 1 until top.size) {
-            sum += 1.0 - topicCosine(top[i].vector, top[j].vector)
-            pairs++
+        for (i in top.indices) {
+            for (j in i + 1 until top.size) {
+                sum += 1.0 - topicCosine(top[i].vector, top[j].vector)
+                pairs++
+            }
         }
         return if (pairs > 0) sum / pairs else 0.0
     }
 
     /** Distinct primary topics surfaced in the top-k over those in the pool. */
-    fun coverage(ranked: List<Labeled>, k: Int): Double {
+    fun coverage(
+        ranked: List<Labeled>,
+        k: Int,
+    ): Double {
         val poolTopics = ranked.mapNotNull { primaryTopic(it.vector) }.toSet()
         if (poolTopics.isEmpty()) return 0.0
         val shownTopics = ranked.take(k).mapNotNull { primaryTopic(it.vector) }.toSet()
@@ -147,26 +162,43 @@ internal object NeuroEval {
      * High = the ranker is suppressing content the user never engaged with —
      * the pathology I-1 (viewport-based impressions) is meant to reduce.
      */
-    fun selfSuppression(brain: UserBrain, unseen: List<Labeled>, now: Long = FIXED_NOW): Double {
+    fun selfSuppression(
+        brain: UserBrain,
+        unseen: List<Labeled>,
+        now: Long = FIXED_NOW,
+    ): Double {
         if (unseen.isEmpty()) return 0.0
-        return unseen.map { item ->
-            val feed = NeuroScoring.calculateFeedHistoryPenalty(
-                item.video.id, brain.feedHistory, now, unseen.size
-            )
-            val implicit = NeuroScoring.calculateImplicitDisinterestPenalty(
-                item.video.id, brain.feedHistory, emptyMap(), now
-            )
-            1.0 - (feed * implicit)
-        }.average()
+        return unseen
+            .map { item ->
+                val feed =
+                    NeuroScoring.calculateFeedHistoryPenalty(
+                        item.video.id,
+                        brain.feedHistory,
+                        now,
+                        unseen.size,
+                    )
+                val implicit =
+                    NeuroScoring.calculateImplicitDisinterestPenalty(
+                        item.video.id,
+                        brain.feedHistory,
+                        emptyMap(),
+                        now,
+                    )
+                1.0 - (feed * implicit)
+            }.average()
     }
 
-    fun evaluate(pool: List<Labeled>, params: ScoringParams, k: Int = 10): Metrics {
+    fun evaluate(
+        pool: List<Labeled>,
+        params: ScoringParams,
+        k: Int = 10,
+    ): Metrics {
         val ranked = rankByScore(pool, params)
         return Metrics(
             ndcg = ndcg(ranked, k),
             ild = ild(ranked, k),
             coverage = coverage(ranked, k),
-            selfSuppression = selfSuppression(params.brain, pool, params.now)
+            selfSuppression = selfSuppression(params.brain, pool, params.now),
         )
     }
 
@@ -175,9 +207,15 @@ internal object NeuroEval {
     private fun log2(x: Double) = ln(x) / ln(2.0)
 
     private fun primaryTopic(v: ContentVector): String? =
-        v.topics.maxByOrNull { it.value }?.key?.substringBefore(':')
+        v.topics
+            .maxByOrNull { it.value }
+            ?.key
+            ?.substringBefore(':')
 
-    private fun topicCosine(a: ContentVector, b: ContentVector): Double {
+    private fun topicCosine(
+        a: ContentVector,
+        b: ContentVector,
+    ): Double {
         if (a.topics.isEmpty() || b.topics.isEmpty()) return 0.0
         var dot = 0.0
         for ((k, v) in a.topics) dot += v * (b.topics[k] ?: 0.0)

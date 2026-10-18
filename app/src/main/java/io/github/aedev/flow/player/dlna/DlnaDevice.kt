@@ -12,5 +12,5 @@ data class DlnaDevice(
      * Absolute URL for the AVTransport SOAP service, filled in after the device
      * description XML is fetched.  Empty until [DlnaCastManager.resolveDevice] succeeds.
      */
-    val avTransportUrl: String = ""
+    val avTransportUrl: String = "",
 )

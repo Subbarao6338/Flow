@@ -17,10 +17,9 @@ import kotlin.math.ln
 import kotlin.math.max
 
 internal object ShazamSignatureGenerator {
-
     private const val SAMPLE_RATE = 16_000
     private const val FFT_SIZE = 2048
-    private const val FFT_OUTPUT_SIZE = FFT_SIZE / 2 + 1  // 1025
+    private const val FFT_OUTPUT_SIZE = FFT_SIZE / 2 + 1 // 1025
     private const val MAX_PEAKS = 255
     private const val MAX_TIME_SECONDS = 12.0
     private const val RING_BUF_SIZE = 256
@@ -31,16 +30,21 @@ internal object ShazamSignatureGenerator {
     private const val BAND_3500_5500 = 3
 
     // Hanning window matching the precomputed C++ HANNIG_MATRIX values.
-    private val HANNING = DoubleArray(FFT_SIZE) { i ->
-        0.5 * (1.0 - cos(2.0 * PI * (i + 1).toDouble() / 2049.0))
-    }
+    private val HANNING =
+        DoubleArray(FFT_SIZE) { i ->
+            0.5 * (1.0 - cos(2.0 * PI * (i + 1).toDouble() / 2049.0))
+        }
 
     fun fromI16(samples: ByteArray): String {
         require(samples.size >= 2 && samples.size % 2 == 0) {
             "samples must be a non-empty byte array with even length (16-bit PCM)"
         }
         val pcm = ShortArray(samples.size / 2)
-        ByteBuffer.wrap(samples).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(pcm)
+        ByteBuffer
+            .wrap(samples)
+            .order(ByteOrder.LITTLE_ENDIAN)
+            .asShortBuffer()
+            .get(pcm)
         return SignatureGeneratorState().process(pcm)
     }
 
@@ -77,7 +81,11 @@ internal object ShazamSignatureGenerator {
             return encodeSignature()
         }
 
-        private fun feedSamples(pcm: ShortArray, start: Int, count: Int) {
+        private fun feedSamples(
+            pcm: ShortArray,
+            start: Int,
+            count: Int,
+        ) {
             for (k in start until start + count) {
                 samplesRing[samplesPos] = pcm[k].toInt()
                 samplesPos = (samplesPos + 1) % FFT_SIZE
@@ -85,9 +93,10 @@ internal object ShazamSignatureGenerator {
         }
 
         private fun doFFT() {
-            val windowed = DoubleArray(FFT_SIZE) { i ->
-                samplesRing[(samplesPos + i) % FFT_SIZE].toDouble() * HANNING[i]
-            }
+            val windowed =
+                DoubleArray(FFT_SIZE) { i ->
+                    samplesRing[(samplesPos + i) % FFT_SIZE].toDouble() * HANNING[i]
+                }
             computeRfft(windowed).copyInto(fftOutputs[fftPos])
             fftPos = (fftPos + 1) % RING_BUF_SIZE
         }
@@ -152,17 +161,18 @@ internal object ShazamSignatureGenerator {
                 val correctedBin = binPos * 64.0 + peakVariation2
                 val frequencyHz = correctedBin * (16000.0 / 2.0 / 1024.0 / 64.0)
 
-                val band = when {
-                    frequencyHz < 250.0 -> continue
-                    frequencyHz < 520.0 -> BAND_250_520
-                    frequencyHz < 1450.0 -> BAND_520_1450
-                    frequencyHz < 3500.0 -> BAND_1450_3500
-                    frequencyHz <= 5500.0 -> BAND_3500_5500
-                    else -> continue
-                }
+                val band =
+                    when {
+                        frequencyHz < 250.0 -> continue
+                        frequencyHz < 520.0 -> BAND_250_520
+                        frequencyHz < 1450.0 -> BAND_520_1450
+                        frequencyHz < 3500.0 -> BAND_1450_3500
+                        frequencyHz <= 5500.0 -> BAND_3500_5500
+                        else -> continue
+                    }
 
                 bandPeaks[band].add(
-                    FrequencyPeak(fftNumber, peakMag.toInt(), correctedBin.toInt())
+                    FrequencyPeak(fftNumber, peakMag.toInt(), correctedBin.toInt()),
                 )
                 totalPeaks++
             }
@@ -203,17 +213,24 @@ internal object ShazamSignatureGenerator {
             val sizeMinusHeader = contents.size + 8
             val samplesAndOffset = (numSamples + SAMPLE_RATE * 0.24).toInt()
 
-            val headerBytes = ByteBuffer.allocate(48).order(ByteOrder.LITTLE_ENDIAN).apply {
-                putInt(0xcafe2580.toInt())
-                putInt(0)                       // crc32 placeholder
-                putInt(sizeMinusHeader)
-                putInt(0x94119c00.toInt())
-                putInt(0); putInt(0); putInt(0)
-                putInt(3 shl 27)                // shifted_sample_rate_id
-                putInt(0); putInt(0)
-                putInt(samplesAndOffset)
-                putInt((15 shl 19) + 0x40000)
-            }.array()
+            val headerBytes =
+                ByteBuffer
+                    .allocate(48)
+                    .order(ByteOrder.LITTLE_ENDIAN)
+                    .apply {
+                        putInt(0xcafe2580.toInt())
+                        putInt(0) // crc32 placeholder
+                        putInt(sizeMinusHeader)
+                        putInt(0x94119c00.toInt())
+                        putInt(0)
+                        putInt(0)
+                        putInt(0)
+                        putInt(3 shl 27) // shifted_sample_rate_id
+                        putInt(0)
+                        putInt(0)
+                        putInt(samplesAndOffset)
+                        putInt((15 shl 19) + 0x40000)
+                    }.array()
 
             val fullBuf = ByteArrayOutputStream(56 + contents.size)
             fullBuf.write(headerBytes)
@@ -237,17 +254,23 @@ internal object ShazamSignatureGenerator {
     private data class FrequencyPeak(
         val fftPassNumber: Int,
         val peakMagnitude: Int,
-        val correctedPeakFrequencyBin: Int
+        val correctedPeakFrequencyBin: Int,
     )
 
-    private fun writeLittleEndian32(out: ByteArrayOutputStream, value: Int) {
+    private fun writeLittleEndian32(
+        out: ByteArrayOutputStream,
+        value: Int,
+    ) {
         out.write(value and 0xFF)
         out.write((value ushr 8) and 0xFF)
         out.write((value ushr 16) and 0xFF)
         out.write((value ushr 24) and 0xFF)
     }
 
-    private fun writeLittleEndian16(out: ByteArrayOutputStream, value: Int) {
+    private fun writeLittleEndian16(
+        out: ByteArrayOutputStream,
+        value: Int,
+    ) {
         out.write(value and 0xFF)
         out.write((value ushr 8) and 0xFF)
     }
@@ -267,8 +290,12 @@ internal object ShazamSignatureGenerator {
             }
             j = j xor bit
             if (i < j) {
-                var tmp = re[i]; re[i] = re[j]; re[j] = tmp
-                tmp = im[i]; im[i] = im[j]; im[j] = tmp
+                var tmp = re[i]
+                re[i] = re[j]
+                re[j] = tmp
+                tmp = im[i]
+                im[i] = im[j]
+                im[j] = tmp
             }
         }
 

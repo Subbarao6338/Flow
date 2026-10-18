@@ -12,8 +12,8 @@ import androidx.room.PrimaryKey
         Index("trackId"),
         Index("recognizedAt"),
         Index("title"),
-        Index("artist")
-    ]
+        Index("artist"),
+    ],
 )
 data class RecognitionHistoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -32,5 +32,5 @@ data class RecognitionHistoryEntity(
     val isrc: String? = null,
     val youtubeVideoId: String? = null,
     val recognizedAt: Long = System.currentTimeMillis(),
-    val liked: Boolean = false
+    val liked: Boolean = false,
 )

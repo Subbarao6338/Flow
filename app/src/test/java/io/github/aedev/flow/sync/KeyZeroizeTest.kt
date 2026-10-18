@@ -7,7 +7,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class KeyZeroizeTest {
-
     @Test
     fun directional_keys_zeroize_clears_both_arrays() {
         val keys = SyncCrypto.deriveKeys(SyncCrypto.randomMasterKey(), SyncCrypto.randomSessionId())

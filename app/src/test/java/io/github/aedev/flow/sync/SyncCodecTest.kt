@@ -11,7 +11,6 @@ import org.junit.Test
 import javax.crypto.AEADBadTagException
 
 class SyncCodecTest {
-
     private val master = SyncCrypto.randomMasterKey()
     private val sid = SyncCrypto.randomSessionId()
     private val keys = SyncCrypto.deriveKeys(master, sid)
