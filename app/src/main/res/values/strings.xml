@@ -4377,5 +4377,4 @@
     <string name="cookie_import_title">Import Cookies</string>
     <string name="cookie_import_hint">Paste your YouTube cookie string below:</string>
     <string name="cookie_import_confirm">Import</string>
-    <string name="btn_copy">Copy</string>
 </resources>

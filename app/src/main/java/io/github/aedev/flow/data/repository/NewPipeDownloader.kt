@@ -14,8 +14,9 @@ import java.util.concurrent.TimeUnit
  * Downloader implementation for NewPipe Extractor.
  * Uses OkHttp for network requests.
  */
-class NewPipeDownloader private constructor(context: Context) : Downloader() {
-
+class NewPipeDownloader private constructor(
+    context: Context,
+) : Downloader() {
     @Volatile
     private var clientHolder: ClientHolder? = null
 
@@ -26,7 +27,8 @@ class NewPipeDownloader private constructor(context: Context) : Downloader() {
 
             return synchronized(this) {
                 clientHolder?.takeIf { it.proxySignature == signature }?.client
-                    ?: AppProxyManager.applyTo(OkHttpClient.Builder())
+                    ?: AppProxyManager
+                        .applyTo(OkHttpClient.Builder())
                         .readTimeout(30, TimeUnit.SECONDS)
                         .connectTimeout(30, TimeUnit.SECONDS)
                         .writeTimeout(30, TimeUnit.SECONDS)
@@ -37,21 +39,20 @@ class NewPipeDownloader private constructor(context: Context) : Downloader() {
 
     private data class ClientHolder(
         val proxySignature: String,
-        val client: OkHttpClient
+        val client: OkHttpClient,
     )
 
     companion object {
-        private const val USER_AGENT =
+        private val userAgent =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0"
 
         @Volatile
-        private var INSTANCE: NewPipeDownloader? = null
+        private var instance: NewPipeDownloader? = null
 
-        fun getInstance(context: Context): NewPipeDownloader {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: NewPipeDownloader(context.applicationContext).also { INSTANCE = it }
+        fun getInstance(context: Context): NewPipeDownloader =
+            instance ?: synchronized(this) {
+                instance ?: NewPipeDownloader(context.applicationContext).also { instance = it }
             }
-        }
     }
 
     @Throws(IOException::class, ReCaptchaException::class)
@@ -61,9 +62,11 @@ class NewPipeDownloader private constructor(context: Context) : Downloader() {
         val headers = request.headers()
         val dataToSend = request.dataToSend()
 
-        val builder = okhttp3.Request.Builder()
-            .url(url)
-            .header("User-Agent", USER_AGENT)
+        val builder =
+            okhttp3.Request
+                .Builder()
+                .url(url)
+                .header("User-Agent", userAgent)
 
         // Add headers
         for ((key, list) in headers) {
@@ -75,11 +78,12 @@ class NewPipeDownloader private constructor(context: Context) : Downloader() {
 
         // Set method and body
         if (httpMethod == "POST") {
-            val body = if (dataToSend != null) {
-                okhttp3.RequestBody.create(null, dataToSend)
-            } else {
-                okhttp3.RequestBody.create(null, ByteArray(0))
-            }
+            val body =
+                if (dataToSend != null) {
+                    okhttp3.RequestBody.create(null, dataToSend)
+                } else {
+                    okhttp3.RequestBody.create(null, ByteArray(0))
+                }
             builder.post(body)
         } else {
             builder.get()
@@ -98,7 +102,7 @@ class NewPipeDownloader private constructor(context: Context) : Downloader() {
                 response.message,
                 responseHeaders,
                 responseString,
-                url
+                url,
             )
         }
     }

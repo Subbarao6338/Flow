@@ -12,20 +12,22 @@ import androidx.room.Index
             entity = PlaylistEntity::class,
             parentColumns = ["id"],
             childColumns = ["playlistId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = VideoEntity::class,
             parentColumns = ["id"],
             childColumns = ["videoId"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
-    indices = [Index(value = ["videoId"]), Index(value = ["playlistId"])]
+    indices = [Index(value = ["videoId"]), Index(value = ["playlistId"])],
 )
 data class PlaylistVideoCrossRef(
     val playlistId: String,
     val videoId: String,
-    val position: Long, // For custom ordering within playlist
-    val addedAt: Long = System.currentTimeMillis() // When the video was added to this playlist
+    // For custom ordering within playlist
+    val position: Long,
+    // When the video was added to this playlist
+    val addedAt: Long = System.currentTimeMillis(),
 )

@@ -9,8 +9,8 @@ import androidx.compose.material.icons.outlined.PlayCircleOutline
 import androidx.compose.material.icons.outlined.Psychology
 import androidx.compose.material.icons.outlined.SettingsRemote
 import androidx.compose.material.icons.outlined.Shield
-import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.Tv
 import androidx.compose.ui.graphics.vector.ImageVector
 import io.github.aedev.flow.R
 
